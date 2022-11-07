@@ -8,7 +8,15 @@
 
 
 
+#pragma pack(pop)
+
+
+
 #include <WordleAPI.hpp>
+
+
+
+#pragma pack(push, 1)
 
 
 

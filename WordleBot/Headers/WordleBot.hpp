@@ -1,3 +1,7 @@
+#pragma pack(push, 1)
+
+
+
 #ifndef WordleBot_hpp
 
 #define WordleBot_hpp
@@ -11,3 +15,7 @@
 
 
 #endif
+
+
+
+#pragma pack(pop)
