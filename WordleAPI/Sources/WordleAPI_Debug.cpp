@@ -2,7 +2,7 @@
 
 
 
-WordleAPI::Debug::Tree::Tree(const wchar_t* _Text, const unsigned short _Attribute, const bool _PrintKids) :
+WordleAPI::Debug::Tree::Tree(const wchar_t* _Text, const uint16_t _Attribute, const bool _PrintKids) :
 	Text(_Text), Attribute(_Attribute), PrintKids(_PrintKids), Kids()
 {
 
@@ -26,7 +26,7 @@ void WordleAPI::Debug::Tree::SetText(const wchar_t* _Text)
 	Text = _Text;
 }
 
-void WordleAPI::Debug::Tree::SetAttribute(const unsigned short _Attribute)
+void WordleAPI::Debug::Tree::SetAttribute(const uint16_t _Attribute)
 {
 	Attribute = _Attribute;
 }

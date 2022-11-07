@@ -8,6 +8,222 @@
 
 
 
+#ifdef UNICODE
+
+#define WORDLEAPI_STRING(X) L ## X
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_STRING(X) X
+
+#endif
+
+
+
+#define WORDLEAPI_PRINT_A(X) std::cout << X
+#define WORDLEAPI_PRINT_W(X) std::wcout << X
+
+#ifdef UNICODE
+
+#define WORDLEAPI_PRINT(X) WORDLEAPI_PRINT_W(X)
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_PRINT(X) WORDLEAPI_PRINT_A(X)
+
+#endif
+
+#define WORDLEAPI_PRINT_LINE_A(X) std::cout << X << '\n'
+#define WORDLEAPI_PRINT_LINE_W(X) std::wcout << X << L'\n'
+
+#ifdef UNICODE
+
+#define WORDLEAPI_PRINT_LINE(X) WORDLEAPI_PRINT_LINE_W(X)
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_PRINT_LINE(X) WORDLEAPI_PRINT_LINE_A(X)
+
+#endif
+
+
+
+#ifdef _DEBUG
+
+#define WORDLEAPI_LOG_A(X) std::cout << X
+#define WORDLEAPI_LOG_W(X) std::wcout << X
+
+#ifdef UNICODE
+
+#define WORDLEAPI_LOG(X) WORDLEAPI_LOG_W(X)
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_LOG(X) WORDLEAPI_LOG_A(X)
+
+#endif
+
+#define WORDLEAPI_LOG_LINE_A(X) std::cout << X << '\n'
+#define WORDLEAPI_LOG_LINE_W(X) std::wcout << X << L'\n'
+
+#ifdef UNICODE
+
+#define WORDLEAPI_LOG_LINE(X) WORDLEAPI_LOG_LINE_W(X)
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_LOG_LINE(X) WORDLEAPI_LOG_LINE_A(X)
+
+#endif
+
+#endif
+
+#ifndef _DEBUG
+
+#define WORDLEAPI_LOG_A(X)
+#define WORDLEAPI_LOG_W(X)
+#define WORDLEAPI_LOG(X)
+
+#define WORDLEAPI_LOG_LINE_A(X)
+#define WORDLEAPI_LOG_LINE_W(X)
+#define WORDLEAPI_LOG_LINE(X)
+
+#endif
+
+
+
+#ifdef _DEBUG
+
+#define WORDLEAPI_OUTPUT_DEBUG_STR_A(X) OutputDebugStringA(X)
+#define WORDLEAPI_OUTPUT_DEBUG_STR_W(X) OutputDebugStringW(X)
+
+#ifdef UNICODE
+
+#define WORDLEAPI_OUTPUT_DEBUG_STR(X) WORDLEAPI_OUTPUT_DEBUG_STR_W(X)
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_OUTPUT_DEBUG_STR(X) WORDLEAPI_OUTPUT_DEBUG_STR_A(X)
+
+#endif
+
+#define WORDLEAPI_OUTPUT_DEBUG_STR_LINE_A(X) OutputDebugStringA(X); OutputDebugStringA("\n")
+#define WORDLEAPI_OUTPUT_DEBUG_STR_LINE_W(X) OutputDebugStringW(X); OutputDebugStringW(L"\n")
+
+#ifdef UNICODE
+
+#define WORDLEAPI_OUTPUT_DEBUG_STR_LINE(X) WORDLEAPI_OUTPUT_DEBUG_STR_LINE_W(X)
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_OUTPUT_DEBUG_STR_LINE(X) WORDLEAPI_OUTPUT_DEBUG_STR_LINE_A(X)
+
+#endif
+
+#endif
+
+#ifndef _DEBUG
+
+#define WORDLEAPI_OUTPUT_DEBUG_STR_A(X)
+#define WORDLEAPI_OUTPUT_DEBUG_STR_W(X)
+#define WORDLEAPI_OUTPUT_DEBUG_STR(X)
+
+#define WORDLEAPI_OUTPUT_DEBUG_STR_LINE_A(X)
+#define WORDLEAPI_OUTPUT_DEBUG_STR_LINE_W(X)
+#define WORDLEAPI_OUTPUT_DEBUG_STR_LINE(X)
+
+#endif
+
+
+
+#ifdef _DEBUG
+
+#define WORDLEAPI_DEBUG_BREAK() WordleAPI::Debug::Break()
+
+#define WORDLEAPI_DEBUG_BREAK_MSG_A(Msg) WordleAPI::Debug::Break(); MessageBoxA(NULL, Msg, "Debug break!", MB_OK | MB_ICONERROR)
+#define WORDLEAPI_DEBUG_BREAK_MSG_W(Msg) WordleAPI::Debug::Break(); MessageBoxW(NULL, Msg, L"Debug break!", MB_OK | MB_ICONERROR)
+
+#ifdef UNICODE
+
+#define WORDLEAPI_DEBUG_BREAK_MSG(Msg) WORDLEAPI_DEBUG_BREAK_MSG_W(Msg)
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_DEBUG_BREAK_MSG(Msg) WORDLEAPI_DEBUG_BREAK_MSG_A(Msg)
+
+#endif
+
+#endif
+
+#ifndef _DEBUG
+
+#define WORDLEAPI_DEBUG_BREAK()
+#define WORDLEAPI_DEBUG_BREAK_MSG_A(Msg)
+#define WORDLEAPI_DEBUG_BREAK_MSG_W(Msg)
+#define WORDLEAPI_DEBUG_BREAK_MSG(Msg)
+
+#endif
+
+
+
+#ifdef _DEBUG
+
+#define WORDLEAPI_ASSERT(Condition) if (!(Condition))\
+{\
+	WORDLEAPI_DEBUG_BREAK();\
+}
+
+#define WORDLEAPI_ASSERT_MSG_A(Condition, Msg) if (!(Condition))\
+{\
+	WORDLEAPI_DEBUG_BREAK_MSG_A(Msg);\
+}
+
+#define WORDLEAPI_ASSERT_MSG_W(Condition, Msg) if (!(Condition))\
+{\
+	WORDLEAPI_DEBUG_BREAK_MSG_W(Msg);\
+}
+
+#ifdef UNICODE
+
+#define WORDLEAPI_ASSERT_MSG(Condition, Msg) WORDLEAPI_ASSERT_MSG_W(Condition, Msg)
+
+#endif
+
+#ifndef UNICODE
+
+#define WORDLEAPI_ASSERT_MSG(Condition, Msg) WORDLEAPI_ASSERT_MSG_A(Condition, Msg)
+
+#endif
+
+#endif
+
+#ifndef _DEBUG
+
+#define WORDLEAPI_ASSERT(Condition)
+#define WORDLEAPI_ASSERT_MSG_A(Condition, Msg)
+#define WORDLEAPI_ASSERT_MSG_W(Condition, Msg)
+#define WORDLEAPI_ASSERT_MSG(Condition, Msg)
+
+#endif
+
+
+
 namespace WordleAPI
 {
 

@@ -148,6 +148,10 @@ namespace WordleAPI
 
 	class Window;
 
+	typedef bool (*WindowInitFunc)(Window* _Wnd);
+
+	struct WindowCreationDescriptor;
+
 	namespace GL
 	{
 
