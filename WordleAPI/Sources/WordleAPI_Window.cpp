@@ -3,7 +3,6 @@
 
 
 WordleAPI::Window* WordleAPI::Window::LastWnd = nullptr;
-std::mutex WordleAPI::Window::LastWndPtrMutex;
 
 
 
@@ -54,16 +53,12 @@ bool WordleAPI::Window::Create(const WindowCreationDescriptor* _Descriptor)
 	bool _Done = false;
 	bool _Fail = false;
 
-	LastWndPtrMutex.lock();
-
 	WndThread = std::move(std::thread(WndThreadFunc, &_Done, &_Fail, this, _Descriptor));
 
 	while (!_Done)
 	{
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
-
-	LastWndPtrMutex.unlock();
 
 	if (_Fail)
 	{
@@ -83,9 +78,6 @@ void WordleAPI::Window::Destroy()
 
 	PostMessage(hWnd, WM_QUIT, 0, 0);
 	WndThread.join();
-	DestroyWindow(hWnd);
-	UserData = nullptr;
-	hWnd = NULL;
 }
 
 bool WordleAPI::Window::Show(const int _ShowCmd)
@@ -174,7 +166,7 @@ WordleAPI::Window* WordleAPI::Window::GetWindowPtr(const HWND _hWnd)
 {
 	if (!_hWnd)
 	{
-		return LastWnd;
+		return nullptr;
 	}
 
 	Window* _WndPtr = (Window*)(GetWindowLongPtr(_hWnd, GWLP_USERDATA));
@@ -191,11 +183,17 @@ void WordleAPI::Window::WndThreadFunc(bool* _Done, bool* _Fail, Window* _Wnd, co
 {
 	_Wnd->UserData = _Descriptor->UserData;
 
+	static std::mutex LastWndPtrMutex;
+
+	LastWndPtrMutex.lock();
+
 	LastWnd = _Wnd;
 
 	_Wnd->hWnd = CreateWindowEx(_Descriptor->dwExStyle, _Descriptor->lpClassName, _Descriptor->lpWindowName, _Descriptor->dwStyle, _Descriptor->X, _Descriptor->Y, _Descriptor->nWidth, _Descriptor->nHeight, _Descriptor->hWndParent, _Descriptor->hMenu, _Descriptor->hInstance, _Descriptor->lpParam);
 
 	LastWnd = nullptr;
+
+	LastWndPtrMutex.unlock();
 
 	if (!_Wnd->hWnd)
 	{
@@ -245,12 +243,12 @@ void WordleAPI::Window::WndThreadFunc(bool* _Done, bool* _Fail, Window* _Wnd, co
 
 	HACCEL _hAccel = _Descriptor->hAccel;
 
-	_Wnd->On = true;
-
 	if (_Descriptor->ShowCmd != SW_HIDE)
 	{
 		_Wnd->Show(_Descriptor->ShowCmd);
 	}
+
+	_Wnd->On = true;
 
 	*_Fail = false;
 	*_Done = true;
@@ -281,4 +279,9 @@ void WordleAPI::Window::WndThreadFunc(bool* _Done, bool* _Fail, Window* _Wnd, co
 	}
 
 	_Wnd->On = false;
+
+	DestroyWindow(_Wnd->hWnd);
+	_Wnd->hWnd = NULL;
+
+	_Wnd->UserData = nullptr;
 }

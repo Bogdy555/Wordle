@@ -66,7 +66,6 @@ namespace WordleAPI
 		static void WndThreadFunc(bool* _Done, bool* _Fail, Window* _Wnd, const WindowCreationDescriptor* _Descriptor);
 
 		static Window* LastWnd;
-		static std::mutex LastWndPtrMutex;
 
 		bool On;
 		HWND hWnd;
