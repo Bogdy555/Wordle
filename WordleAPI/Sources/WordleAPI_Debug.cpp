@@ -151,8 +151,8 @@ void WordleAPI::Debug::Tree::operator= (Tree&& _Other) noexcept
 
 
 
-HANDLE _ConsoleOutHandle = NULL;
-uint16_t _DefaultAttribute = 0;
+static HANDLE _ConsoleOutHandle = NULL;
+static uint16_t _DefaultAttribute = 0;
 
 const WordleAPI::ConstHandleRef WordleAPI::Debug::ConsoleOutHandle = _ConsoleOutHandle;
 const WordleAPI::ConstUInt16Ref WordleAPI::Debug::DefaultAttribute = _DefaultAttribute;

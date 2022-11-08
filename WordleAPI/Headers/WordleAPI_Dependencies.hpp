@@ -15,6 +15,9 @@
 #include "WordleAPI_WinTargetVer.hpp"
 #include <Windows.h>
 
+#include <gl\GL.h>
+#include <gl\GLU.h>
+
 #include <iostream>
 #include <fstream>
 
@@ -117,6 +120,8 @@ namespace WordleAPI
 
 	typedef const uint16_t& ConstUInt16Ref;
 
+	typedef const HMODULE& ConstHModuleRef;
+
 	namespace Debug
 	{
 
@@ -156,6 +161,30 @@ namespace WordleAPI
 	{
 
 		class Context;
+
+		struct VertexData;
+
+		typedef std::vector<VertexData> VertexBufferCPUCash;
+
+		class VertexBuffer;
+
+		typedef std::vector<unsigned int> IndexBufferCPUCash;
+
+		class IndexBuffer;
+
+		struct MeshCPUCash;
+
+		struct Mesh;
+
+		class VertexAttribArray;
+
+		class Shader;
+
+		class Uniform;
+
+		struct TextureData;
+
+		class Texture2D;
 
 	}
 
