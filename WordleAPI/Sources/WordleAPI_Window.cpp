@@ -68,9 +68,10 @@ bool WordleAPI::Window::Create(const WindowCreationDescriptor* _Descriptor)
 	if (_Fail)
 	{
 		WndThread.join();
+		return false;
 	}
 
-	return 1 - _Fail;
+	return true;
 }
 
 void WordleAPI::Window::Destroy()
@@ -80,9 +81,9 @@ void WordleAPI::Window::Destroy()
 		return;
 	}
 
-	On = false;
-	DestroyWindow(hWnd);
+	PostMessage(hWnd, WM_QUIT, 0, 0);
 	WndThread.join();
+	DestroyWindow(hWnd);
 	UserData = nullptr;
 	hWnd = NULL;
 }
@@ -242,6 +243,8 @@ void WordleAPI::Window::WndThreadFunc(bool* _Done, bool* _Fail, Window* _Wnd, co
 
 	MSG _Msg = { 0 };
 
+	HACCEL _hAccel = _Descriptor->hAccel;
+
 	_Wnd->On = true;
 
 	if (_Descriptor->ShowCmd != SW_HIDE)
@@ -249,26 +252,16 @@ void WordleAPI::Window::WndThreadFunc(bool* _Done, bool* _Fail, Window* _Wnd, co
 		_Wnd->Show(_Descriptor->ShowCmd);
 	}
 
-	HACCEL _hAccel = _Descriptor->hAccel;
-
 	*_Fail = false;
 	*_Done = true;
 
-	while (_Wnd->On)
+	while (GetMessage(&_Msg, NULL, 0, 0))
 	{
-		if (GetMessage(&_Msg, NULL, 0, 0))
+		if (_Msg.hwnd == _Wnd->hWnd)
 		{
-			if (_Msg.hwnd == _Wnd->hWnd)
+			if (_hAccel)
 			{
-				if (_hAccel)
-				{
-					if (!TranslateAccelerator(_Msg.hwnd, _hAccel, &_Msg))
-					{
-						TranslateMessage(&_Msg);
-						DispatchMessage(&_Msg);
-					}
-				}
-				else
+				if (!TranslateAccelerator(_Msg.hwnd, _hAccel, &_Msg))
 				{
 					TranslateMessage(&_Msg);
 					DispatchMessage(&_Msg);
@@ -280,5 +273,12 @@ void WordleAPI::Window::WndThreadFunc(bool* _Done, bool* _Fail, Window* _Wnd, co
 				DispatchMessage(&_Msg);
 			}
 		}
+		else
+		{
+			TranslateMessage(&_Msg);
+			DispatchMessage(&_Msg);
+		}
 	}
+
+	_Wnd->On = false;
 }
