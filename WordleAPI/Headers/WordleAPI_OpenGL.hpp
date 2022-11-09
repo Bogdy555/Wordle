@@ -123,6 +123,244 @@ namespace WordleAPI
 		bool Load();
 		void Unload();
 
+		class Context
+		{
+
+		public:
+
+			Context();
+			Context(const Context& _Other) = delete;
+			Context(Context&& _Other) noexcept;
+			~Context();
+
+			bool Create(Window* _WndPtr);
+			void Destroy();
+			bool Bind();
+
+			const HGLRC GetHandle() const;
+
+			Window* GetWndPtr();
+			const Window* GetWndPtr() const;
+
+			operator const HGLRC() const;
+
+			void operator= (const Context& _Other) = delete;
+			void operator= (Context&& _Other) noexcept;
+
+			static void Unbind();
+
+		private:
+
+			HGLRC Handle;
+			Window* WndPtr;
+
+		};
+
+		struct VertexData
+		{
+			glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
+			glm::vec4 Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			glm::vec2 TextureCoords = glm::vec2(0.0f, 0.0f);
+		};
+
+		class VertexBuffer
+		{
+
+		public:
+
+			VertexBuffer();
+			VertexBuffer(const VertexBuffer& _Other) = delete;
+			VertexBuffer(VertexBuffer&& _Other) noexcept;
+			~VertexBuffer();
+
+			bool Create(const VertexBufferCPUCash& _VBO_CPUCash);
+			void Destroy();
+			bool Bind();
+
+			const bool CheckCreated() const;
+			const unsigned int GetID() const;
+
+			void operator= (const VertexBuffer& _Other) = delete;
+			void operator= (VertexBuffer&& _Other) noexcept;
+
+			static void Unbind();
+
+		private:
+
+			unsigned int ID;
+
+		};
+
+		class IndexBuffer
+		{
+
+		public:
+
+			IndexBuffer();
+			IndexBuffer(const IndexBuffer& _Other) = delete;
+			IndexBuffer(IndexBuffer&& _Other) noexcept;
+			~IndexBuffer();
+
+			bool Create(const IndexBufferCPUCash& _IBO_CPUCash);
+			void Destroy();
+			bool Bind();
+
+			const bool CheckCreated() const;
+			const unsigned int GetID() const;
+
+			void operator= (const IndexBuffer& _Other) = delete;
+			void operator= (IndexBuffer&& _Other) noexcept;
+
+			static void Unbind();
+
+		private:
+
+			unsigned int ID;
+
+		};
+
+		class VertexAttribArray
+		{
+
+		public:
+
+			VertexAttribArray();
+			VertexAttribArray(const VertexAttribArray& _Other) = delete;
+			VertexAttribArray(VertexAttribArray&& _Other) noexcept;
+			~VertexAttribArray();
+
+			bool Create();
+			void Destroy();
+			bool Bind();
+			bool EnableAttrib(const unsigned int _AttribID, const int _ElementsCount, const int _ElementsCountTotal, const size_t _Offset);
+			bool DisableAttrib(const unsigned int _AttribID);
+
+			const bool CheckCreated() const;
+			const unsigned int GetID() const;
+
+			void operator= (const VertexAttribArray& _Other) = delete;
+			void operator= (VertexAttribArray&& _Other) noexcept;
+
+			static void Unbind();
+
+		private:
+
+			unsigned int ID;
+
+		};
+
+		class Shader
+		{
+
+		public:
+
+			Shader();
+			Shader(const Shader& _Other) = delete;
+			Shader(Shader&& _Other) noexcept;
+			~Shader();
+
+			bool Create(const char* _VS, const char* _FS);
+			void Destroy();
+			bool Bind();
+
+			const bool CheckCreated() const;
+			const unsigned int GetID() const;
+
+			void operator= (const Shader& _Other) = delete;
+			void operator= (Shader&& _Other) noexcept;
+
+			static void Unbind();
+
+		private:
+
+			unsigned int ID;
+
+		};
+
+		class Uniform
+		{
+
+		public:
+
+			Uniform();
+			Uniform(const Uniform& _Other) = delete;
+			Uniform(Uniform&& _Other) noexcept;
+			~Uniform();
+
+			bool GetLocation(const Shader& _Shader, const char* _Name);
+			void ReleaseLocation();
+
+			const bool CheckBind() const;
+			const int GetID() const;
+
+			bool Set1f(const float _x);
+			bool Set2f(const float _x, const float _y);
+			bool Set3f(const float _x, const float _y, const float _z);
+			bool Set4f(const float _x, const float _y, const float _z, const float _w);
+
+			bool Set1i(const int _x);
+			bool Set2i(const int _x, const int _y);
+			bool Set3i(const int _x, const int _y, const int _z);
+			bool Set4i(const int _x, const int _y, const int _z, const int _w);
+
+			bool Set1b(const bool _Value);
+
+			bool Set1ui(const unsigned int _Value);
+
+			bool SetMatrix2fv(const float* _Data);
+			bool SetMatrix3fv(const float* _Data);
+			bool SetMatrix4fv(const float* _Data);
+
+			void operator= (const Uniform& _Other) = delete;
+			void operator= (Uniform&& _Other) noexcept;
+
+		private:
+
+			int ID;
+
+		};
+
+		struct TextureData
+		{
+			unsigned int Width = 0, Height = 0;
+			unsigned char* Data = nullptr;
+			int WrapSType = GL_REPEAT;
+			int WrapTType = GL_REPEAT;
+			int MinFilter = GL_NEAREST;
+			int MagFilter = GL_NEAREST;
+		};
+
+		class Texture2D
+		{
+
+		public:
+
+			Texture2D();
+			Texture2D(const Texture2D& _Other) = delete;
+			Texture2D(Texture2D&& _Other) noexcept;
+			~Texture2D();
+
+			bool Create(const TextureData& _TexData);
+			void Destroy();
+			bool Bind();
+
+			const bool CheckCreated() const;
+			const unsigned int GetID() const;
+
+			void operator= (const Texture2D& _Other) = delete;
+			void operator= (Texture2D&& _Other) noexcept;
+
+			static void Unbind();
+
+		private:
+
+			unsigned int ID;
+
+		};
+
+		const std::string GetUniformIndexName(const std::string _Name, const size_t _Index);
+		bool LoadTexture(TextureData& _TexData, const wchar_t* _FileName);
+
 	}
 
 }

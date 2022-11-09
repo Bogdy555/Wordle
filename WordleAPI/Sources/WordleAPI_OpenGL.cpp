@@ -342,3 +342,1043 @@ void WordleAPI::GL::Unload()
 }
 
 #undef UNLOAD
+
+
+
+WordleAPI::GL::Context::Context() : Handle(NULL), WndPtr(nullptr)
+{
+
+}
+
+WordleAPI::GL::Context::Context(Context&& _Other) noexcept : Handle(_Other.Handle), WndPtr(_Other.WndPtr)
+{
+	_Other.Handle = NULL;
+	_Other.WndPtr = nullptr;
+}
+
+WordleAPI::GL::Context::~Context()
+{
+
+}
+
+bool WordleAPI::GL::Context::Create(Window* _WndPtr)
+{
+	if (Handle || !_WndPtr)
+	{
+		return false;
+	}
+
+	HWND _hWnd = _WndPtr->GetHandle();
+
+	if (!_hWnd)
+	{
+		return false;
+	}
+
+	HDC _hWndDC = GetDC(_hWnd);
+
+	if (!_hWndDC)
+	{
+		return false;
+	}
+
+	PIXELFORMATDESCRIPTOR _PFD = { 0 };
+
+	_PFD.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	_PFD.nVersion = 1;
+	_PFD.iPixelType = PFD_TYPE_RGBA;
+	_PFD.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	_PFD.cColorBits = 32;
+	_PFD.cAlphaBits = 8;
+	_PFD.cDepthBits = 24;
+	_PFD.cStencilBits = 8;
+	_PFD.iLayerType = PFD_MAIN_PLANE;
+
+	int _PixelFormatID = ChoosePixelFormat(_hWndDC, &_PFD);
+
+	if (!_PixelFormatID)
+	{
+		ReleaseDC(_hWnd, _hWndDC);
+		return false;
+	}
+
+	if (!DescribePixelFormat(_hWndDC, _PixelFormatID, sizeof(PIXELFORMATDESCRIPTOR), &_PFD))
+	{
+		ReleaseDC(_hWnd, _hWndDC);
+		return false;
+	}
+
+	if (!SetPixelFormat(_hWndDC, _PixelFormatID, &_PFD))
+	{
+		ReleaseDC(_hWnd, _hWndDC);
+		return false;
+	}
+
+	Handle = wglCreateContext(_hWndDC);
+
+	if (!Handle)
+	{
+		ReleaseDC(_hWnd, _hWndDC);
+		return false;
+	}
+
+	ReleaseDC(_hWnd, _hWndDC);
+
+	WndPtr = _WndPtr;
+
+	return true;
+}
+
+void WordleAPI::GL::Context::Destroy()
+{
+	if (!Handle)
+	{
+		return;
+	}
+
+	Unbind();
+
+	wglDeleteContext(Handle);
+
+	Handle = NULL;
+	WndPtr = nullptr;
+}
+
+bool WordleAPI::GL::Context::Bind()
+{
+	if (!Handle)
+	{
+		return false;
+	}
+
+	HWND _hWnd = WndPtr->GetHandle();
+
+	if (!_hWnd)
+	{
+		return false;
+	}
+
+	HDC _hWndDC = GetDC(_hWnd);
+
+	if (!_hWndDC)
+	{
+		return false;
+	}
+
+	if (!wglMakeCurrent(_hWndDC, Handle))
+	{
+		ReleaseDC(_hWnd, _hWndDC);
+		return false;
+	}
+
+	ReleaseDC(_hWnd, _hWndDC);
+
+	return true;
+}
+
+const HGLRC WordleAPI::GL::Context::GetHandle() const
+{
+	return Handle;
+}
+
+WordleAPI::Window* WordleAPI::GL::Context::GetWndPtr()
+{
+	return WndPtr;
+}
+
+const WordleAPI::Window* WordleAPI::GL::Context::GetWndPtr() const
+{
+	return WndPtr;
+}
+
+WordleAPI::GL::Context::operator const HGLRC() const
+{
+	return Handle;
+}
+
+void WordleAPI::GL::Context::operator= (Context&& _Other) noexcept
+{
+	Handle = _Other.Handle;
+	WndPtr = _Other.WndPtr;
+
+	_Other.Handle = NULL;
+	_Other.WndPtr = nullptr;
+}
+
+void WordleAPI::GL::Context::Unbind()
+{
+	wglMakeCurrent(NULL, NULL);
+}
+
+
+
+WordleAPI::GL::VertexBuffer::VertexBuffer() : ID(0)
+{
+
+}
+
+WordleAPI::GL::VertexBuffer::VertexBuffer(VertexBuffer&& _Other) noexcept : ID(_Other.ID)
+{
+	_Other.ID = 0;
+}
+
+WordleAPI::GL::VertexBuffer::~VertexBuffer()
+{
+
+}
+
+bool WordleAPI::GL::VertexBuffer::Create(const VertexBufferCPUCash& _VBO_CPUCash)
+{
+	if (ID)
+	{
+		return false;
+	}
+
+	if (!_VBO_CPUCash.size())
+	{
+		return false;
+	}
+
+	glGenBuffers(1, &ID);
+
+	if (!ID)
+	{
+		return false;
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
+
+	glBufferData(GL_ARRAY_BUFFER, _VBO_CPUCash.size() * sizeof(VertexData), _VBO_CPUCash.data(), GL_DYNAMIC_DRAW);
+
+	return true;
+}
+
+void WordleAPI::GL::VertexBuffer::Destroy()
+{
+	if (!ID)
+	{
+		return;
+	}
+
+	Unbind();
+	glDeleteBuffers(1, &ID);
+	ID = 0;
+}
+
+bool WordleAPI::GL::VertexBuffer::Bind()
+{
+	if (!ID)
+	{
+		return false;
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, ID);
+
+	return true;
+}
+
+const bool WordleAPI::GL::VertexBuffer::CheckCreated() const
+{
+	return ID != 0;
+}
+
+const unsigned int WordleAPI::GL::VertexBuffer::GetID() const
+{
+	return ID;
+}
+
+void WordleAPI::GL::VertexBuffer::operator= (VertexBuffer&& _Other) noexcept
+{
+	ID = _Other.ID;
+
+	_Other.ID = 0;
+}
+
+void WordleAPI::GL::VertexBuffer::Unbind()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+
+WordleAPI::GL::IndexBuffer::IndexBuffer() : ID(0)
+{
+
+}
+
+WordleAPI::GL::IndexBuffer::IndexBuffer(IndexBuffer&& _Other) noexcept : ID(_Other.ID)
+{
+	_Other.ID = 0;
+}
+
+WordleAPI::GL::IndexBuffer::~IndexBuffer()
+{
+
+}
+
+bool WordleAPI::GL::IndexBuffer::Create(const IndexBufferCPUCash& _IBO_CPUCash)
+{
+	if (ID)
+	{
+		return false;
+	}
+
+	if (!_IBO_CPUCash.size())
+	{
+		return false;
+	}
+
+	glGenBuffers(1, &ID);
+
+	if (!ID)
+	{
+		return false;
+	}
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _IBO_CPUCash.size() * sizeof(unsigned int), _IBO_CPUCash.data(), GL_DYNAMIC_DRAW);
+
+	return true;
+}
+
+void WordleAPI::GL::IndexBuffer::Destroy()
+{
+	if (!ID)
+	{
+		return;
+	}
+
+	Unbind();
+	glDeleteBuffers(1, &ID);
+	ID = 0;
+}
+
+bool WordleAPI::GL::IndexBuffer::Bind()
+{
+	if (!ID)
+	{
+		return false;
+	}
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+
+	return true;
+}
+
+const bool WordleAPI::GL::IndexBuffer::CheckCreated() const
+{
+	return ID != 0;
+}
+
+const unsigned int WordleAPI::GL::IndexBuffer::GetID() const
+{
+	return ID;
+}
+
+void WordleAPI::GL::IndexBuffer::operator= (IndexBuffer&& _Other) noexcept
+{
+	ID = _Other.ID;
+
+	_Other.ID = 0;
+}
+
+void WordleAPI::GL::IndexBuffer::Unbind()
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+
+
+WordleAPI::GL::VertexAttribArray::VertexAttribArray() : ID(0)
+{
+
+}
+
+WordleAPI::GL::VertexAttribArray::VertexAttribArray(VertexAttribArray&& _Other) noexcept : ID(_Other.ID)
+{
+	_Other.ID = 0;
+}
+
+WordleAPI::GL::VertexAttribArray::~VertexAttribArray()
+{
+
+}
+
+bool WordleAPI::GL::VertexAttribArray::Create()
+{
+	if (ID)
+	{
+		return false;
+	}
+
+	glGenVertexArrays(1, &ID);
+
+	if (!ID)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void WordleAPI::GL::VertexAttribArray::Destroy()
+{
+	if (!ID)
+	{
+		return;
+	}
+
+	Unbind();
+	glDeleteVertexArrays(1, &ID);
+	ID = 0;
+}
+
+bool WordleAPI::GL::VertexAttribArray::Bind()
+{
+	if (!ID)
+	{
+		return false;
+	}
+
+	glBindVertexArray(ID);
+
+	return true;
+}
+
+bool WordleAPI::GL::VertexAttribArray::EnableAttrib(const unsigned int _AttribID, const int _ElementsCount, const int _ElementsCountTotal, const size_t _Offset)
+{
+	if (!ID)
+	{
+		return false;
+	}
+
+	glEnableVertexAttribArray(_AttribID);
+	glVertexAttribPointer(_AttribID, _ElementsCount, GL_FLOAT, GL_FALSE, sizeof(float) * _ElementsCountTotal, (const void*)(_Offset * sizeof(float)));
+
+	return true;
+}
+
+bool WordleAPI::GL::VertexAttribArray::DisableAttrib(const unsigned int _AttribID)
+{
+	if (!ID)
+	{
+		return false;
+	}
+
+	glDisableVertexAttribArray(_AttribID);
+
+	return true;
+}
+
+const bool WordleAPI::GL::VertexAttribArray::CheckCreated() const
+{
+	return ID != 0;
+}
+
+const unsigned int WordleAPI::GL::VertexAttribArray::GetID() const
+{
+	return ID;
+}
+
+void WordleAPI::GL::VertexAttribArray::operator= (VertexAttribArray&& _Other) noexcept
+{
+	ID = _Other.ID;
+
+	_Other.ID = 0;
+}
+
+void WordleAPI::GL::VertexAttribArray::Unbind()
+{
+	glBindVertexArray(0);
+}
+
+
+
+WordleAPI::GL::Shader::Shader() : ID(0)
+{
+
+}
+
+WordleAPI::GL::Shader::Shader(Shader&& _Other) noexcept : ID(_Other.ID)
+{
+	_Other.ID = 0;
+}
+
+WordleAPI::GL::Shader::~Shader()
+{
+
+}
+
+bool WordleAPI::GL::Shader::Create(const char* _VS, const char* _FS)
+{
+	if (ID)
+	{
+		return false;
+	}
+
+	if (!_VS || !_FS)
+	{
+		return false;
+	}
+
+	ID = glCreateProgram();
+
+	if (!ID)
+	{
+		return false;
+	}
+
+	const char** _VPtr = &_VS;
+	const char** _FPtr = &_FS;
+
+	unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
+
+	if (!vs)
+	{
+		glDeleteProgram(ID);
+		ID = 0;
+		return false;
+	}
+
+	glShaderSource(vs, 1, _VPtr, nullptr);
+
+	glCompileShader(vs);
+
+	{
+		int _Result;
+		glGetShaderiv(vs, GL_COMPILE_STATUS, &_Result);
+		if (_Result == GL_FALSE)
+		{
+			int _Len = 0;
+			glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &_Len);
+			char* _Msg = new char[(size_t)(_Len)+1];
+			glGetShaderInfoLog(vs, _Len + 1, &_Len, _Msg);
+			WORDLEAPI_LOG_LINE("Vertex shader error:");
+			WORDLEAPI_LOG_LINE(_Msg);
+			delete[] _Msg;
+
+			glDeleteShader(vs);
+			glDeleteProgram(ID);
+			ID = 0;
+			return false;
+		}
+	}
+
+	unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
+
+	if (!fs)
+	{
+		glDeleteShader(vs);
+		glDeleteProgram(ID);
+		ID = 0;
+		return false;
+	}
+
+	glShaderSource(fs, 1, _FPtr, nullptr);
+
+	glCompileShader(fs);
+
+	{
+		int _Result;
+		glGetShaderiv(fs, GL_COMPILE_STATUS, &_Result);
+		if (_Result == GL_FALSE)
+		{
+			int _Len = 0;
+			glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &_Len);
+			char* _Msg = new char[(size_t)(_Len)+1];
+			glGetShaderInfoLog(fs, _Len + 1, &_Len, _Msg);
+			WORDLEAPI_LOG_LINE("Fragment shader error:");
+			WORDLEAPI_LOG_LINE(_Msg);
+			delete[] _Msg;
+
+			glDeleteShader(vs);
+			glDeleteShader(fs);
+			glDeleteProgram(ID);
+			ID = 0;
+			return false;
+		}
+	}
+
+	glAttachShader(ID, vs);
+	glAttachShader(ID, fs);
+
+	glLinkProgram(ID);
+
+	{
+		int _Result;
+		glGetProgramiv(ID, GL_LINK_STATUS, &_Result);
+		if (_Result == GL_FALSE)
+		{
+			int _Len = 0;
+			glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &_Len);
+			char* _Msg = new char[(size_t)(_Len)+1];
+			glGetProgramInfoLog(ID, _Len + 1, &_Len, _Msg);
+			WORDLEAPI_LOG_LINE("Link error:");
+			WORDLEAPI_LOG_LINE(_Msg);
+			delete[] _Msg;
+
+			glDetachShader(ID, vs);
+			glDeleteShader(vs);
+			glDetachShader(ID, fs);
+			glDeleteShader(fs);
+			glDeleteProgram(ID);
+			ID = 0;
+			return false;
+		}
+	}
+
+	glValidateProgram(ID);
+
+	glDetachShader(ID, vs);
+	glDeleteShader(vs);
+	glDetachShader(ID, fs);
+	glDeleteShader(fs);
+
+	return true;
+}
+
+void WordleAPI::GL::Shader::Destroy()
+{
+	if (!ID)
+	{
+		return;
+	}
+
+	Unbind();
+	glDeleteProgram(ID);
+	ID = 0;
+}
+
+bool WordleAPI::GL::Shader::Bind()
+{
+	if (!ID)
+	{
+		return false;
+	}
+
+	glUseProgram(ID);
+
+	return true;
+}
+
+const bool WordleAPI::GL::Shader::CheckCreated() const
+{
+	return ID != 0;
+}
+
+const unsigned int WordleAPI::GL::Shader::GetID() const
+{
+	return ID;
+}
+
+void WordleAPI::GL::Shader::operator= (Shader&& _Other) noexcept
+{
+	ID = _Other.ID;
+
+	_Other.ID = 0;
+}
+
+void WordleAPI::GL::Shader::Unbind()
+{
+	glUseProgram(0);
+}
+
+
+
+WordleAPI::GL::Uniform::Uniform() : ID(-1)
+{
+
+}
+
+WordleAPI::GL::Uniform::Uniform(Uniform&& _Other) noexcept : ID(_Other.ID)
+{
+	_Other.ID = -1;
+}
+
+WordleAPI::GL::Uniform::~Uniform()
+{
+
+}
+
+bool WordleAPI::GL::Uniform::GetLocation(const Shader& _Shader, const char* _Name)
+{
+	if (ID != -1)
+	{
+		return false;
+	}
+
+	if (!_Name)
+	{
+		return false;
+	}
+
+	ID = glGetUniformLocation(_Shader.GetID(), _Name);
+
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void WordleAPI::GL::Uniform::ReleaseLocation()
+{
+	ID = -1;
+}
+
+const bool WordleAPI::GL::Uniform::CheckBind() const
+{
+	return ID != -1;
+}
+
+const int WordleAPI::GL::Uniform::GetID() const
+{
+	return ID;
+}
+
+bool WordleAPI::GL::Uniform::Set1f(const float _x)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform1f(ID, _x);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set2f(const float _x, const float _y)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform2f(ID, _x, _y);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set3f(const float _x, const float _y, const float _z)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform3f(ID, _x, _y, _z);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set4f(const float _x, const float _y, const float _z, const float _w)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform4f(ID, _x, _y, _z, _w);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set1i(const int _x)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform1i(ID, _x);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set2i(const int _x, const int _y)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform2i(ID, _x, _y);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set3i(const int _x, const int _y, const int _z)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform3i(ID, _x, _y, _z);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set4i(const int _x, const int _y, const int _z, const int _w)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform4i(ID, _x, _y, _z, _w);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set1b(const bool _Value)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform1i(ID, _Value);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::Set1ui(const unsigned int _Value)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniform1ui(ID, _Value);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::SetMatrix2fv(const float* _Data)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniformMatrix2fv(ID, 1, GL_TRUE, _Data);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::SetMatrix3fv(const float* _Data)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniformMatrix3fv(ID, 1, GL_TRUE, _Data);
+
+	return true;
+}
+
+bool WordleAPI::GL::Uniform::SetMatrix4fv(const float* _Data)
+{
+	if (ID == -1)
+	{
+		return false;
+	}
+
+	glUniformMatrix4fv(ID, 1, GL_TRUE, _Data);
+
+	return true;
+}
+
+void WordleAPI::GL::Uniform::operator= (Uniform&& _Other) noexcept
+{
+	ID = _Other.ID;
+
+	_Other.ID = -1;
+}
+
+
+
+WordleAPI::GL::Texture2D::Texture2D() : ID(0)
+{
+
+}
+
+WordleAPI::GL::Texture2D::Texture2D(Texture2D&& _Other) noexcept : ID(_Other.ID)
+{
+	_Other.ID = 0;
+}
+
+WordleAPI::GL::Texture2D::~Texture2D()
+{
+
+}
+
+bool WordleAPI::GL::Texture2D::Create(const TextureData& _TexData)
+{
+	if (ID)
+	{
+		return false;
+	}
+
+	if (!_TexData.Width || !_TexData.Height || !_TexData.Data)
+	{
+		return false;
+	}
+
+	glGenTextures(1, &ID);
+
+	if (!ID)
+	{
+		return false;
+	}
+
+	glBindTexture(GL_TEXTURE_2D, ID);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _TexData.WrapSType);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _TexData.WrapTType);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _TexData.MinFilter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _TexData.MagFilter);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _TexData.Width, _TexData.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, _TexData.Data);
+
+	return true;
+}
+
+void WordleAPI::GL::Texture2D::Destroy()
+{
+	if (!ID)
+	{
+		return;
+	}
+
+	Unbind();
+	glDeleteTextures(1, &ID);
+	ID = 0;
+}
+
+bool WordleAPI::GL::Texture2D::Bind()
+{
+	if (!ID)
+	{
+		return false;
+	}
+
+	glBindTexture(GL_TEXTURE_2D, ID);
+
+	return true;
+}
+
+const bool WordleAPI::GL::Texture2D::CheckCreated() const
+{
+	return ID != 0;
+}
+
+const unsigned int WordleAPI::GL::Texture2D::GetID() const
+{
+	return ID;
+}
+
+void WordleAPI::GL::Texture2D::operator= (Texture2D&& _Other) noexcept
+{
+	ID = _Other.ID;
+
+	_Other.ID = 0;
+}
+
+void WordleAPI::GL::Texture2D::Unbind()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+
+
+const std::string WordleAPI::GL::GetUniformIndexName(const std::string _Name, const size_t _Index)
+{
+	return _Name + std::string("[") + std::to_string(_Index) + std::string("]");
+}
+
+
+
+bool WordleAPI::GL::LoadTexture(TextureData& _TexData, const wchar_t* _FileName)
+{
+	if (_TexData.Data || _TexData.Width || _TexData.Height)
+	{
+		return false;
+	}
+
+	if (!_FileName)
+	{
+		return false;
+	}
+
+	HBITMAP _hBmp = (HBITMAP)(LoadImage(NULL, _FileName, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE));
+
+	if (!_hBmp)
+	{
+		return false;
+	}
+
+	BITMAP _Bmp = { 0 };
+
+	if (!GetObject(_hBmp, sizeof(BITMAP), &_Bmp))
+	{
+		DeleteObject(_hBmp);
+		return false;
+	}
+
+	_TexData.Data = new unsigned char[(size_t)(_Bmp.bmWidth) * (size_t)(_Bmp.bmHeight) * 4];
+
+	if (!_TexData.Data)
+	{
+		DeleteObject(_hBmp);
+		return false;
+	}
+
+	if (!GetBitmapBits(_hBmp, _Bmp.bmWidth * _Bmp.bmHeight * 4, _TexData.Data))
+	{
+		delete[] _TexData.Data;
+		DeleteObject(_hBmp);
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < (size_t)(_Bmp.bmWidth) * (size_t)(_Bmp.bmHeight); _Index++)
+	{
+		unsigned char _Aux = _TexData.Data[_Index * 4 + 0];
+		_TexData.Data[_Index * 4 + 0] = _TexData.Data[_Index * 4 + 2];
+		_TexData.Data[_Index * 4 + 2] = _Aux;
+		_TexData.Data[_Index * 4 + 3] = 255;
+	}
+
+	for (size_t _Y = 0; _Y < (size_t)(_Bmp.bmHeight / 2); _Y++)
+	{
+		for (size_t _X = 0; _X < (size_t)(_Bmp.bmWidth); _X++)
+		{
+			unsigned char _Aux0 = _TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 0];
+			unsigned char _Aux1 = _TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 1];
+			unsigned char _Aux2 = _TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 2];
+			unsigned char _Aux3 = _TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 3];
+
+			_TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 0] = _TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 0];
+			_TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 1] = _TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 1];
+			_TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 2] = _TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 2];
+			_TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 3] = _TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 3];
+
+			_TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 0] = _Aux0;
+			_TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 1] = _Aux1;
+			_TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 2] = _Aux2;
+			_TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 3] = _Aux3;
+		}
+	}
+
+	_TexData.Width = _Bmp.bmWidth;
+	_TexData.Height = _Bmp.bmHeight;
+
+	DeleteObject(_hBmp);
+
+	return true;
+}
