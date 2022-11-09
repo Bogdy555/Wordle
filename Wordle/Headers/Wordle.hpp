@@ -12,6 +12,16 @@
 
 #include "Wordle_Resources.hpp"
 
+#include "Wordle_Window.hpp"
+
+#include "Wordle_Application.hpp"
+
+#include "Wordle_MainMenu.hpp"
+
+#include "Wordle_PlayMenu.hpp"
+
+#include "Wordle_BotMenu.hpp"
+
 
 
 #endif

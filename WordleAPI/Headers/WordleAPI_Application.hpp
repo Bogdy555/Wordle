@@ -57,7 +57,7 @@ namespace WordleAPI
 		void SetLagTime(const float _LagTime = 1.0f / 10.0f);
 		void SetSync(const uint64_t _Sync = 60);
 
-		int32_t Run(const HINSTANCE _hInstance, const LPWSTR _CmdLine, const int _ShowCmd, const wchar_t* _SharedMemoryAndMutexName);
+		int32_t Run(const HINSTANCE _hInstance, const LPWSTR _CmdLine, const int _ShowCmd, const wchar_t* _SharedMemoryName, const wchar_t* _SharedMutexName);
 
 		virtual void Setup() = 0;
 		virtual void Update() = 0;

@@ -2,7 +2,7 @@
 
 
 
-WordleAPI::Menu::Menu() : On(false), NextMenu(_NullMenu), QueuedMenu(_NullMenu), ApplicationObj(nullptr), PreviousMenuObj(nullptr)
+WordleAPI::Menu::Menu() : On(false), NextMenu(_NullMenu), ApplicationObj(nullptr)
 {
 
 }
@@ -27,11 +27,6 @@ const uint64_t WordleAPI::Menu::GetNextMenu() const
 	return NextMenu;
 }
 
-const uint64_t WordleAPI::Menu::GetQueuedMenu() const
-{
-	return QueuedMenu;
-}
-
 WordleAPI::Application* WordleAPI::Menu::GetApplicationObj()
 {
 	return ApplicationObj;
@@ -40,16 +35,6 @@ WordleAPI::Application* WordleAPI::Menu::GetApplicationObj()
 const WordleAPI::Application* WordleAPI::Menu::GetApplicationObj() const
 {
 	return ApplicationObj;
-}
-
-WordleAPI::Menu* WordleAPI::Menu::GetPreviousMenuObj()
-{
-	return PreviousMenuObj;
-}
-
-const WordleAPI::Menu* WordleAPI::Menu::GetPreviousMenuObj() const
-{
-	return PreviousMenuObj;
 }
 
 WordleAPI::Time::Timer& WordleAPI::Menu::GetFrameTime(const size_t _Index)
@@ -93,11 +78,6 @@ void WordleAPI::Menu::Close(const uint64_t _NextMenu)
 	NextMenu = _NextMenu;
 }
 
-void WordleAPI::Menu::SetQueuedMenu(const uint64_t _QueuedMenu)
-{
-	QueuedMenu = _QueuedMenu;
-}
-
 void WordleAPI::Menu::BindApplication(Application* _ApplicationObj)
 {
 	ApplicationObj = _ApplicationObj;
@@ -131,9 +111,6 @@ void WordleAPI::Menu::Run(Application* _ApplicationObj)
 	}
 
 	ApplicationObj = _ApplicationObj;
-
-	PreviousMenuObj = ApplicationObj->GetCurrentMenuObj();
-
 	ApplicationObj->SetCurrentMenuObj(this);
 
 	Setup();
@@ -147,23 +124,18 @@ void WordleAPI::Menu::Run(Application* _ApplicationObj)
 		{
 			GetFrameTime(_Current).Stop();
 
-			unsigned long _SleepTime = (unsigned long)((1.0f * Time::SecToMicro) / (float)(GetSync()) - GetFrameTime(_Current) * Time::SecToMicro);
+			float _ExpectedTime = Time::SecToMicro / (float)(GetSync());
+			float _RealTime = GetFrameTime(_Current) * Time::SecToMicro;
 
-			if ((long)(_SleepTime) > 0)
+			if (_RealTime < _ExpectedTime)
 			{
-				Time::SleepMicroSec(_SleepTime);
+				Time::SleepMicroSec((uint64_t)(_ExpectedTime) - (uint64_t)(_RealTime));
 			}
 		}
 
 		GetFrameTime(_Current).Stop();
 
 		GetFrameTime(_Previous) = GetFrameTime(_Current);
-
-		if (QueuedMenu != _NullMenu)
-		{
-			QueuedMenus();
-			QueuedMenu = _NullMenu;
-		}
 
 		if (!ApplicationObj->CheckOn())
 		{
@@ -172,9 +144,6 @@ void WordleAPI::Menu::Run(Application* _ApplicationObj)
 	}
 	Stop();
 
-	ApplicationObj->SetCurrentMenuObj(PreviousMenuObj);
 	ApplicationObj->SetCurrentMenu(NextMenu);
-
 	ApplicationObj = nullptr;
-	PreviousMenuObj = nullptr;
 }

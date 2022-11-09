@@ -162,21 +162,21 @@ void WordleAPI::Application::SetSync(const uint64_t _Sync)
 	Sync = _Sync;
 }
 
-int32_t WordleAPI::Application::Run(const HINSTANCE _hInstance, const LPWSTR _CmdLine, const int _ShowCmd, const wchar_t* _SharedMemoryAndMutexName)
+int32_t WordleAPI::Application::Run(const HINSTANCE _hInstance, const LPWSTR _CmdLine, const int _ShowCmd, const wchar_t* _SharedMemoryName, const wchar_t* _SharedMutexName)
 {
-	if (!_SharedMemoryAndMutexName)
+	if (!_SharedMemoryName || !_SharedMutexName)
 	{
 		MessageBox(NULL, L"An unexpected error occurred!", L"Error", MB_OK | MB_ICONERROR);
 		return _ReturnError;
 	}
 
-	if (!SharedInstanceMutex.Create(_SharedMemoryAndMutexName))
+	if (!SharedInstanceMutex.Create(_SharedMutexName))
 	{
 		MessageBox(NULL, L"An unexpected error occurred!", L"Error", MB_OK | MB_ICONERROR);
 		return _ReturnError;
 	}
 
-	if (!SharedInstanceMemory.Create(_SharedMemoryAndMutexName, 1))
+	if (!SharedInstanceMemory.Create(_SharedMemoryName, 1))
 	{
 		SharedInstanceMutex.Destroy();
 		MessageBox(NULL, L"An unexpected error occurred!", L"Error", MB_OK | MB_ICONERROR);

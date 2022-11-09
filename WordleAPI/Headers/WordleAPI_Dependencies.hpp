@@ -5,6 +5,7 @@
 
 
 #pragma comment(lib, "WinMM.lib")
+#pragma comment(lib, "opengl32.lib")
 
 
 

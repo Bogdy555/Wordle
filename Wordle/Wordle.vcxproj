@@ -22,12 +22,22 @@
     <ResourceCompile Include="Resources\Wordle_Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Wordle_Application.cpp" />
+    <ClCompile Include="Sources\Wordle_BotMenu.cpp" />
     <ClCompile Include="Sources\Wordle_EntryPoint.cpp" />
+    <ClCompile Include="Sources\Wordle_MainMenu.cpp" />
+    <ClCompile Include="Sources\Wordle_PlayMenu.cpp" />
+    <ClCompile Include="Sources\Wordle_Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Wordle_Application.hpp" />
+    <ClInclude Include="Headers\Wordle_BotMenu.hpp" />
     <ClInclude Include="Headers\Wordle_Dependencies.hpp" />
+    <ClInclude Include="Headers\Wordle_MainMenu.hpp" />
+    <ClInclude Include="Headers\Wordle_PlayMenu.hpp" />
     <ClInclude Include="Headers\Wordle_Resources.hpp" />
     <ClInclude Include="Headers\Wordle.hpp" />
+    <ClInclude Include="Headers\Wordle_Window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Icons\Main Icon.ico" />
