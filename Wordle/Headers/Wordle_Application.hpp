@@ -27,6 +27,8 @@ namespace Wordle
 		Window::UserData& GetWndUserData();
 		const Window::UserData& GetWndUserData() const;
 
+		bool UpdateFullScreen();
+
 		void Setup() override;
 		void Update() override;
 		void Stop() override;

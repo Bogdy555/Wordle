@@ -34,14 +34,14 @@ namespace Wordle
 			std::mutex MutexWndPlacement;
 			WINDOWPLACEMENT WndPlacement = { 0 };
 
+			std::mutex MutexWndRect;
+			RECT WndRect = { 0 };
+
 			std::mutex MutexFullScreen;
 			bool FullScreen = false;
 
 			std::mutex MutexHIcon;
 			HICON hIcon = NULL;
-
-			std::mutex MutexHCursor;
-			HICON hCursor = NULL;
 		};
 
 		bool Init(WordleAPI::Window* _Wnd);

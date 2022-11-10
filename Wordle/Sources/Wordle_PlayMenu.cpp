@@ -79,6 +79,16 @@ void Wordle::PlayMenu::Keys()
 	{
 		Close(_MainMenu);
 	}
+
+	if (!KeysPressed[VK_F11][WordleAPI::_Previous] && KeysPressed[VK_F11][WordleAPI::_Current])
+	{
+		Application* _Application = (Application*)(GetApplicationObj());
+
+		if (!_Application->UpdateFullScreen())
+		{
+			_Application->Close(WordleAPI::_ReturnError);
+		}
+	}
 }
 
 void Wordle::PlayMenu::Mouse()
@@ -100,6 +110,15 @@ void Wordle::PlayMenu::Engine()
 	}
 
 	_WndUserData->MutexClose.unlock();
+
+	_WndUserData->MutexError.lock();
+
+	if (_WndUserData->Error)
+	{
+		GetApplicationObj()->Close(WordleAPI::_ReturnError);
+	}
+
+	_WndUserData->MutexError.unlock();
 }
 
 void Wordle::PlayMenu::Animations()

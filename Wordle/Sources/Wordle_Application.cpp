@@ -32,6 +32,119 @@ const Wordle::Window::UserData& Wordle::Application::GetWndUserData() const
 	return WndUserData;
 }
 
+bool Wordle::Application::UpdateFullScreen()
+{
+	WndUserData.MutexFullScreen.lock();
+
+	WndUserData.FullScreen = !WndUserData.FullScreen;
+
+	if (WndUserData.FullScreen)
+	{
+		WndUserData.MutexFullScreen.unlock();
+
+		WndUserData.MutexWndPlacement.lock();
+
+		if (!GetWindowPlacement(Wnd, &WndUserData.WndPlacement))
+		{
+			WndUserData.MutexWndPlacement.unlock();
+			return false;
+		}
+
+		WndUserData.MutexWndPlacement.unlock();
+
+		WndUserData.MutexWndRect.lock();
+
+		if (!GetWindowRect(Wnd, &WndUserData.WndRect))
+		{
+			WndUserData.MutexWndRect.unlock();
+			return false;
+		}
+
+		WndUserData.MutexWndRect.unlock();
+
+		HMONITOR _hMonitor = MonitorFromWindow(Wnd, MONITOR_DEFAULTTOPRIMARY);
+
+		if (!_hMonitor)
+		{
+			return false;
+		}
+
+		MONITORINFOEX _MonitorInfo = { 0 };
+
+		_MonitorInfo.cbSize = sizeof(MONITORINFOEX);
+
+		if (!GetMonitorInfo(_hMonitor, &_MonitorInfo))
+		{
+			return false;
+		}
+
+		if (!SetWindowLongPtr(Wnd, GWL_STYLE, WS_POPUP))
+		{
+			return false;
+		}
+
+		if (!SetWindowPos(Wnd, HWND_TOP, _MonitorInfo.rcMonitor.left, _MonitorInfo.rcMonitor.top, _MonitorInfo.rcMonitor.right - _MonitorInfo.rcMonitor.left, _MonitorInfo.rcMonitor.bottom - _MonitorInfo.rcMonitor.top, SWP_ASYNCWINDOWPOS))
+		{
+			return false;
+		}
+
+		if (!Wnd.Show(SW_SHOW))
+		{
+			return false;
+		}
+	}
+	else
+	{
+		WndUserData.MutexFullScreen.unlock();
+
+		if (!SetWindowLongPtr(Wnd, GWL_STYLE, WS_OVERLAPPEDWINDOW))
+		{
+			return false;
+		}
+
+		WndUserData.MutexWndPlacement.lock();
+
+		if (WndUserData.WndPlacement.showCmd != SW_NORMAL)
+		{
+			if (!SetWindowPos(Wnd, HWND_TOP, WndUserData.WndPlacement.rcNormalPosition.left, WndUserData.WndPlacement.rcNormalPosition.top, WndUserData.WndPlacement.rcNormalPosition.right - WndUserData.WndPlacement.rcNormalPosition.left, WndUserData.WndPlacement.rcNormalPosition.bottom - WndUserData.WndPlacement.rcNormalPosition.top, SWP_ASYNCWINDOWPOS))
+			{
+				WndUserData.MutexWndPlacement.unlock();
+				return false;
+			}
+
+			if (!Wnd.Show(WndUserData.WndPlacement.showCmd))
+			{
+				WndUserData.MutexWndPlacement.unlock();
+				return false;
+			}
+
+			WndUserData.MutexWndPlacement.unlock();
+		}
+		else
+		{
+			WndUserData.MutexWndPlacement.unlock();
+
+			WndUserData.MutexWndRect.lock();
+
+			if (!SetWindowPos(Wnd, HWND_TOP, WndUserData.WndRect.left, WndUserData.WndRect.top, WndUserData.WndRect.right - WndUserData.WndRect.left, WndUserData.WndRect.bottom - WndUserData.WndRect.top, SWP_ASYNCWINDOWPOS))
+			{
+				WndUserData.MutexWndRect.unlock();
+				return false;
+			}
+
+			if (!Wnd.Show(SW_SHOW))
+			{
+				WndUserData.MutexWndRect.unlock();
+				return false;
+			}
+
+			WndUserData.MutexWndRect.unlock();
+		}
+	}
+
+	return true;
+}
+
 void Wordle::Application::Setup()
 {
 	GetSharedInstanceMutex().Lock();
@@ -128,13 +241,6 @@ bool Wordle::Application::InitWindow()
 		return false;
 	}
 
-	WndUserData.hCursor = LoadCursor(NULL, IDC_ARROW);
-
-	if (!WndUserData.hCursor)
-	{
-		return false;
-	}
-
 	WNDCLASSEX _WndClass = { 0 };
 
 	_WndClass.cbSize = sizeof(WNDCLASSEX);
@@ -144,7 +250,7 @@ bool Wordle::Application::InitWindow()
 	_WndClass.cbWndExtra = 0;
 	_WndClass.hInstance = GetHInstance();
 	_WndClass.hIcon = WndUserData.hIcon;
-	_WndClass.hCursor = WndUserData.hCursor;
+	_WndClass.hCursor = NULL;
 	_WndClass.hbrBackground = NULL;
 	_WndClass.lpszMenuName = nullptr;
 	_WndClass.lpszClassName = L"WndClassWordle";

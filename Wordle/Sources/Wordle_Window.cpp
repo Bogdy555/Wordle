@@ -112,6 +112,25 @@ LRESULT CALLBACK Wordle::Window::WndProc(_In_ HWND _hWnd, _In_ UINT _Msg, _In_ W
 
 		break;
 	}
+	case WM_SETCURSOR:
+	{
+		WORD _LoLParam = LOWORD(_lParam);
+
+		switch (_LoLParam)
+		{
+		case HTCLIENT:
+		{
+			SetCursor(NULL);
+			break;
+		}
+		default:
+		{
+			return DefWindowProc(_hWnd, _Msg, _wParam, _lParam);
+		}
+		}
+
+		break;
+	}
 	case WM_ERASEBKGND:
 	{
 		break;
@@ -128,7 +147,7 @@ LRESULT CALLBACK Wordle::Window::WndProc(_In_ HWND _hWnd, _In_ UINT _Msg, _In_ W
 
 		HDC _hWndDC = BeginPaint(_hWnd, &_PaintStr);
 
-		WordleAPI::GL::glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		WordleAPI::GL::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		WordleAPI::GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		WordleAPI::GL::wglSwapIntervalEXT(1);
