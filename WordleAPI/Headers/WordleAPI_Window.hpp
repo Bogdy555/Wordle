@@ -54,6 +54,8 @@ namespace WordleAPI
 		const bool GetClientSize(int32_t& _Width, int32_t& _Height) const;
 		const bool GetWindowSize(int32_t& _Width, int32_t& _Height) const;
 
+		const size_t GetRefreshRate() const;
+
 		operator const HWND() const;
 
 		void operator= (const Window& _Other) = delete;

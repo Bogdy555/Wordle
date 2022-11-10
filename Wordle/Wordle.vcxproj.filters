@@ -69,5 +69,19 @@
     <Image Include="Resources\Icons\Main Icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\Textures\Alphabet.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Text\WordList.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\CircleVS.glsl" />
+    <None Include="Resources\Shaders\CircleFS.glsl" />
+    <None Include="Resources\Shaders\ColorVS.glsl" />
+    <None Include="Resources\Shaders\ColorFS.glsl" />
+    <None Include="Resources\Shaders\TextureVS.glsl" />
+    <None Include="Resources\Shaders\TextureFS.glsl" />
   </ItemGroup>
 </Project>

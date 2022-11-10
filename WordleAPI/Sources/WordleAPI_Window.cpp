@@ -145,6 +145,36 @@ const bool WordleAPI::Window::GetWindowSize(int32_t& _Width, int32_t& _Height) c
 	return true;
 }
 
+const size_t WordleAPI::Window::GetRefreshRate() const
+{
+	HMONITOR _hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY);
+
+	if (!_hMonitor)
+	{
+		return 0;
+	}
+
+	MONITORINFOEX _MonitorInfo = { 0 };
+
+	_MonitorInfo.cbSize = sizeof(MONITORINFOEX);
+
+	if (!GetMonitorInfo(_hMonitor, &_MonitorInfo))
+	{
+		return 0;
+	}
+
+	DEVMODE _DevMode = { 0 };
+
+	_DevMode.dmSize = sizeof(DEVMODE);
+
+	if (!EnumDisplaySettingsEx(_MonitorInfo.szDevice, ENUM_CURRENT_SETTINGS, &_DevMode, 0))
+	{
+		return 0;
+	}
+
+	return (size_t)(_DevMode.dmDisplayFrequency);
+}
+
 WordleAPI::Window::operator const HWND() const
 {
 	return hWnd;

@@ -75,7 +75,10 @@ void Wordle::BotMenu::DeleteInputs()
 
 void Wordle::BotMenu::Keys()
 {
-
+	if (KeysPressed[VK_ESCAPE][WordleAPI::_Current])
+	{
+		Close(_MainMenu);
+	}
 }
 
 void Wordle::BotMenu::Mouse()
@@ -109,6 +112,11 @@ void Wordle::BotMenu::FrameBuild()
 	Application* _Application = (Application*)(GetApplicationObj());
 
 	WordleAPI::Window* _Wnd = &_Application->GetWnd();
+
+	size_t _RefreshRate = _Wnd->GetRefreshRate();
+
+	SetSync(_RefreshRate);
+	SetTimeStep(1.0f / (float)(_RefreshRate));
 
 	_Wnd->UpdateContent();
 }

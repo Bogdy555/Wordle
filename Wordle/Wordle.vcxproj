@@ -41,6 +41,18 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Icons\Main Icon.ico" />
+    <Image Include="Resources\Textures\Alphabet.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Text\WordList.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\CircleFS.glsl" />
+    <None Include="Resources\Shaders\CircleVS.glsl" />
+    <None Include="Resources\Shaders\ColorFS.glsl" />
+    <None Include="Resources\Shaders\ColorVS.glsl" />
+    <None Include="Resources\Shaders\TextureFS.glsl" />
+    <None Include="Resources\Shaders\TextureVS.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -39,8 +39,18 @@ namespace Wordle
 		bool InitWindow();
 		void DestroyWindow();
 
+		bool InitOpenGL();
+		void DestroyOpenGL();
+
 		WordleAPI::Window Wnd;
 		Window::UserData WndUserData;
+
+		WordleAPI::GL::Mesh Quad;
+		WordleAPI::GL::VertexAttribArray VAO;
+		WordleAPI::GL::Shader TextureShader;
+		WordleAPI::GL::Shader ColorShader;
+		WordleAPI::GL::Shader CircleShader;
+		WordleAPI::GL::Texture2D AlphabetTexture;
 
 	};
 

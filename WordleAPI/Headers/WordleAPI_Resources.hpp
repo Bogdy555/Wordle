@@ -11,4 +11,9 @@
 
 
 
+#define WORDLEAPI_SHADER_RES 256
+#define WORDLEAPI_TEXT_RES 257
+
+
+
 #endif

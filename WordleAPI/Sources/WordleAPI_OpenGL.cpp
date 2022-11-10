@@ -1382,3 +1382,134 @@ bool WordleAPI::GL::LoadTexture(TextureData& _TexData, const wchar_t* _FileName)
 
 	return true;
 }
+
+
+
+bool WordleAPI::GL::LoadTextureFromResource(TextureData& _TexData, HINSTANCE _hInstance, size_t _ResName)
+{
+	if (_TexData.Data || _TexData.Width || _TexData.Height)
+	{
+		return false;
+	}
+
+	HBITMAP _hBmp = (HBITMAP)(LoadImage(_hInstance, MAKEINTRESOURCE(_ResName), IMAGE_BITMAP, 0, 0, 0));
+
+	if (!_hBmp)
+	{
+		return false;
+	}
+
+	BITMAP _Bmp = { 0 };
+
+	if (!GetObject(_hBmp, sizeof(BITMAP), &_Bmp))
+	{
+		DeleteObject(_hBmp);
+		return false;
+	}
+
+	_TexData.Data = new unsigned char[(size_t)(_Bmp.bmWidth) * (size_t)(_Bmp.bmHeight) * 4];
+
+	if (!_TexData.Data)
+	{
+		DeleteObject(_hBmp);
+		return false;
+	}
+
+	if (!GetBitmapBits(_hBmp, _Bmp.bmWidth * _Bmp.bmHeight * 4, _TexData.Data))
+	{
+		delete[] _TexData.Data;
+		DeleteObject(_hBmp);
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < (size_t)(_Bmp.bmWidth) * (size_t)(_Bmp.bmHeight); _Index++)
+	{
+		unsigned char _Aux = _TexData.Data[_Index * 4 + 0];
+		_TexData.Data[_Index * 4 + 0] = _TexData.Data[_Index * 4 + 2];
+		_TexData.Data[_Index * 4 + 2] = _Aux;
+		_TexData.Data[_Index * 4 + 3] = 255;
+	}
+
+	for (size_t _Y = 0; _Y < (size_t)(_Bmp.bmHeight / 2); _Y++)
+	{
+		for (size_t _X = 0; _X < (size_t)(_Bmp.bmWidth); _X++)
+		{
+			unsigned char _Aux0 = _TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 0];
+			unsigned char _Aux1 = _TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 1];
+			unsigned char _Aux2 = _TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 2];
+			unsigned char _Aux3 = _TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 3];
+
+			_TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 0] = _TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 0];
+			_TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 1] = _TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 1];
+			_TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 2] = _TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 2];
+			_TexData.Data[(_X + _Y * _Bmp.bmWidth) * 4 + 3] = _TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 3];
+
+			_TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 0] = _Aux0;
+			_TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 1] = _Aux1;
+			_TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 2] = _Aux2;
+			_TexData.Data[(_X + (_Bmp.bmHeight - _Y - 1) * _Bmp.bmWidth) * 4 + 3] = _Aux3;
+		}
+	}
+
+	_TexData.Width = _Bmp.bmWidth;
+	_TexData.Height = _Bmp.bmHeight;
+
+	DeleteObject(_hBmp);
+
+	return true;
+}
+
+
+
+char* WordleAPI::GL::LoadShaderSourceFromResource(HINSTANCE _hInstance, size_t _ResName)
+{
+	HRSRC _hResource = FindResource(_hInstance, MAKEINTRESOURCE(_ResName), MAKEINTRESOURCE(WORDLEAPI_SHADER_RES));
+
+	if (!_hResource)
+	{
+		return nullptr;
+	}
+
+	size_t _Len = SizeofResource(_hInstance, _hResource);
+
+	if (!_Len)
+	{
+		return nullptr;
+	}
+
+	HGLOBAL _hGlobal = LoadResource(_hInstance, _hResource);
+
+	if (!_hGlobal)
+	{
+		return nullptr;
+	}
+
+	const unsigned char* _ResourcePtr = (const unsigned char*)(LockResource(_hGlobal));
+
+	if (!_ResourcePtr)
+	{
+		FreeResource(_hGlobal);
+		return nullptr;
+	}
+
+	char* _Buff = new char[_Len + 1];
+
+	if (!_Buff)
+	{
+		UnlockResource(_hGlobal);
+		FreeResource(_hGlobal);
+		return nullptr;
+	}
+
+	_Buff[_Len] = '\0';
+
+	for (size_t _Index = 0; _Index < _Len; _Index++)
+	{
+		_Buff[_Index] = _ResourcePtr[_Index];
+	}
+
+	UnlockResource(_hGlobal);
+	FreeResource(_hGlobal);
+
+	return _Buff;
+}

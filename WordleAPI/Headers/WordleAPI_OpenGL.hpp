@@ -159,7 +159,6 @@ namespace WordleAPI
 		struct VertexData
 		{
 			glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
-			glm::vec4 Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 			glm::vec2 TextureCoords = glm::vec2(0.0f, 0.0f);
 		};
 
@@ -217,6 +216,18 @@ namespace WordleAPI
 
 			unsigned int ID;
 
+		};
+
+		struct MeshCPUCash
+		{
+			VertexBufferCPUCash VBO;
+			IndexBufferCPUCash IBO;
+		};
+
+		struct Mesh
+		{
+			VertexBuffer VBO;
+			IndexBuffer IBO;
 		};
 
 		class VertexAttribArray
@@ -360,6 +371,8 @@ namespace WordleAPI
 
 		const std::string GetUniformIndexName(const std::string _Name, const size_t _Index);
 		bool LoadTexture(TextureData& _TexData, const wchar_t* _FileName);
+		bool LoadTextureFromResource(TextureData& _TexData, HINSTANCE _hInstance, size_t _ResName);
+		char* LoadShaderSourceFromResource(HINSTANCE _hInstance, size_t _ResName);
 
 	}
 
