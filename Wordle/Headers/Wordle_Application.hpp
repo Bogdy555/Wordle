@@ -21,6 +21,12 @@ namespace Wordle
 		Application(Application&& _Other) noexcept = delete;
 		~Application();
 
+		WordleAPI::Window& GetWnd();
+		const WordleAPI::Window& GetWnd() const;
+
+		Window::UserData& GetWndUserData();
+		const Window::UserData& GetWndUserData() const;
+
 		void Setup() override;
 		void Update() override;
 		void Stop() override;
@@ -30,7 +36,11 @@ namespace Wordle
 
 	private:
 
+		bool InitWindow();
+		void DestroyWindow();
 
+		WordleAPI::Window Wnd;
+		Window::UserData WndUserData;
 
 	};
 

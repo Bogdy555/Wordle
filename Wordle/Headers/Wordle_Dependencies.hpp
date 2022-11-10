@@ -30,7 +30,12 @@ namespace Wordle
 		_BotMenu = 3
 	};
 
-	struct WindowUserData;
+	namespace Window
+	{
+
+		struct UserData;
+
+	}
 
 	class Application;
 

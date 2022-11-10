@@ -14,8 +14,8 @@ namespace WordleAPI
 	struct WindowCreationDescriptor
 	{
 		DWORD dwExStyle = NULL;
-		LPWSTR lpClassName = nullptr;
-		LPWSTR lpWindowName = nullptr;
+		LPCWSTR lpClassName = nullptr;
+		LPCWSTR lpWindowName = nullptr;
 		DWORD dwStyle = NULL;
 		int X = 0;
 		int Y = 0;

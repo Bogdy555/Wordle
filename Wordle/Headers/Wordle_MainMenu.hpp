@@ -38,6 +38,8 @@ namespace Wordle
 		void Animations() override;
 		void FrameBuild() override;
 
+		bool KeysPressed[256][2];
+
 	};
 
 }

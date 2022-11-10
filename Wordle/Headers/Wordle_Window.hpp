@@ -11,10 +11,44 @@
 namespace Wordle
 {
 
-	struct WindowUserData
+	namespace Window
 	{
-		WordleAPI::GL::Context Context;
-	};
+
+		struct UserData
+		{
+			std::mutex MutexContext;
+			WordleAPI::GL::Context Context;
+
+			std::mutex MutexClose;
+			bool Close = false;
+
+			std::mutex MutexError;
+			bool Error = false;
+
+			std::mutex MutexKeysPressed;
+			bool KeysPressed[256];
+
+			std::mutex MutexFocus;
+			bool Focus = false;
+
+			std::mutex MutexWndPlacement;
+			WINDOWPLACEMENT WndPlacement = { 0 };
+
+			std::mutex MutexFullScreen;
+			bool FullScreen = false;
+
+			std::mutex MutexHIcon;
+			HICON hIcon = NULL;
+
+			std::mutex MutexHCursor;
+			HICON hCursor = NULL;
+		};
+
+		bool Init(WordleAPI::Window* _Wnd);
+
+		LRESULT CALLBACK WndProc(_In_ HWND _hWnd, _In_ UINT _Msg, _In_ WPARAM _wParam, _In_ LPARAM _lParam);
+
+	}
 
 }
 
