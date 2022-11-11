@@ -32,6 +32,181 @@ const Wordle::Window::UserData& Wordle::Application::GetWndUserData() const
 	return WndUserData;
 }
 
+WordleAPI::GL::Mesh& Wordle::Application::GetQuad()
+{
+	return Quad;
+}
+
+const WordleAPI::GL::Mesh& Wordle::Application::GetQuad() const
+{
+	return Quad;
+}
+
+WordleAPI::GL::VertexAttribArray& Wordle::Application::GetVAO()
+{
+	return VAO;
+}
+
+const WordleAPI::GL::VertexAttribArray& Wordle::Application::GetVAO() const
+{
+	return VAO;
+}
+
+WordleAPI::GL::Shader& Wordle::Application::GetTextureShader()
+{
+	return TextureShader;
+}
+
+const WordleAPI::GL::Shader& Wordle::Application::GetTextureShader() const
+{
+	return TextureShader;
+}
+
+WordleAPI::GL::Shader& Wordle::Application::GetColorShader()
+{
+	return ColorShader;
+}
+
+const WordleAPI::GL::Shader& Wordle::Application::GetColorShader() const
+{
+	return ColorShader;
+}
+
+WordleAPI::GL::Shader& Wordle::Application::GetCircleShader()
+{
+	return CircleShader;
+}
+
+const WordleAPI::GL::Shader& Wordle::Application::GetCircleShader() const
+{
+	return CircleShader;
+}
+
+WordleAPI::GL::Texture2D& Wordle::Application::GetAlphabetTexture()
+{
+	return AlphabetTexture;
+}
+
+const WordleAPI::GL::Texture2D& Wordle::Application::GetAlphabetTexture() const
+{
+	return AlphabetTexture;
+}
+
+void Wordle::Application::RenderSquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color)
+{
+	ColorShader.Bind();
+	VAO.Bind();
+	Quad.VBO.Bind();
+	Quad.IBO.Bind();
+
+	WordleAPI::GL::Uniform u_WndSize;
+	WordleAPI::GL::Uniform u_Size;
+	WordleAPI::GL::Uniform u_Position;
+	WordleAPI::GL::Uniform u_Color;
+
+	u_WndSize.GetLocation(ColorShader, "u_WndSize");
+	u_Size.GetLocation(ColorShader, "u_Size");
+	u_Position.GetLocation(ColorShader, "u_Position");
+	u_Color.GetLocation(ColorShader, "u_Color");
+
+	u_WndSize.Set2f((float)(_Width), (float)(_Height));
+	u_Size.Set2f(_Size.x, _Size.y);
+	u_Position.Set2f(_Position.x, _Position.y);
+	u_Color.Set4f(_Color.x, _Color.y, _Color.z, _Color.w);
+
+	u_WndSize.ReleaseLocation();
+	u_Size.ReleaseLocation();
+	u_Position.ReleaseLocation();
+	u_Color.ReleaseLocation();
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+}
+
+void Wordle::Application::RenderCircle(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color)
+{
+	CircleShader.Bind();
+	VAO.Bind();
+	Quad.VBO.Bind();
+	Quad.IBO.Bind();
+
+	WordleAPI::GL::Uniform u_WndSize;
+	WordleAPI::GL::Uniform u_Size;
+	WordleAPI::GL::Uniform u_Position;
+	WordleAPI::GL::Uniform u_Color;
+
+	u_WndSize.GetLocation(ColorShader, "u_WndSize");
+	u_Size.GetLocation(ColorShader, "u_Size");
+	u_Position.GetLocation(ColorShader, "u_Position");
+	u_Color.GetLocation(ColorShader, "u_Color");
+
+	u_WndSize.Set2f((float)(_Width), (float)(_Height));
+	u_Size.Set2f(_Size.x, _Size.y);
+	u_Position.Set2f(_Position.x, _Position.y);
+	u_Color.Set4f(_Color.x, _Color.y, _Color.z, _Color.w);
+
+	u_WndSize.ReleaseLocation();
+	u_Size.ReleaseLocation();
+	u_Position.ReleaseLocation();
+	u_Color.ReleaseLocation();
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+}
+
+void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, WordleAPI::GL::Texture2D& _Texture, glm::vec2 _TextureMultiplier, glm::vec2 _TextureOffset)
+{
+	TextureShader.Bind();
+	VAO.Bind();
+	Quad.VBO.Bind();
+	Quad.IBO.Bind();
+	WordleAPI::GL::glActiveTexture(GL_TEXTURE0);
+	_Texture.Bind();
+
+	WordleAPI::GL::Uniform u_WndSize;
+	WordleAPI::GL::Uniform u_Size;
+	WordleAPI::GL::Uniform u_Position;
+	WordleAPI::GL::Uniform u_Texture;
+	WordleAPI::GL::Uniform u_TextureMultiplier;
+	WordleAPI::GL::Uniform u_TextureOffset;
+
+	u_WndSize.GetLocation(TextureShader, "u_WndSize");
+	u_Size.GetLocation(TextureShader, "u_Size");
+	u_Position.GetLocation(TextureShader, "u_Position");
+	u_Texture.GetLocation(TextureShader, "u_Texture");
+	u_TextureMultiplier.GetLocation(TextureShader, "u_TextureMultiplier");
+	u_TextureOffset.GetLocation(TextureShader, "u_TextureOffset");
+
+	u_WndSize.Set2f((float)(_Width), (float)(_Height));
+	u_Size.Set2f(_Size.x, _Size.y);
+	u_Position.Set2f(_Position.x, _Position.y);
+	u_Texture.Set1i(0);
+	u_TextureMultiplier.Set2f(_TextureMultiplier.x, _TextureMultiplier.y);
+	u_TextureOffset.Set2f(_TextureOffset.x, _TextureOffset.y);
+
+	u_WndSize.ReleaseLocation();
+	u_Size.ReleaseLocation();
+	u_Position.ReleaseLocation();
+	u_Texture.ReleaseLocation();
+	u_TextureMultiplier.ReleaseLocation();
+	u_TextureOffset.ReleaseLocation();
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+}
+
+void Wordle::Application::RenderFancySquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color, float _Radius)
+{
+	RenderSquare(_Width, _Height, glm::vec2(_Size.x - 2.0f * _Radius, _Size.y - 2.0f * _Radius), glm::vec2(_Position.x + _Radius, _Position.y + _Radius), _Color);
+
+	RenderSquare(_Width, _Height, glm::vec2(_Radius, _Size.y - 2.0f * _Radius), glm::vec2(_Position.x, _Position.y + _Radius), _Color); // Stanga
+	RenderSquare(_Width, _Height, glm::vec2(_Radius, _Size.y - 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - _Radius, _Position.y + _Radius), _Color); // Dreapta
+	RenderSquare(_Width, _Height, glm::vec2(_Size.x - 2.0f * _Radius, _Radius), glm::vec2(_Position.x + _Radius, _Position.y), _Color); // Jos
+	RenderSquare(_Width, _Height, glm::vec2(_Size.x - 2.0f * _Radius, _Radius), glm::vec2(_Position.x + _Radius, _Position.y + _Size.y - _Radius), _Color); // Sus
+
+	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x, _Position.y), _Color); // Stanga Jos
+	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Stanga Sus
+	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y), _Color); // Dreapta Jos
+	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Dreapta Sus
+}
+
 bool Wordle::Application::UpdateFullScreen()
 {
 	WndUserData.MutexFullScreen.lock();
@@ -324,10 +499,10 @@ bool Wordle::Application::InitOpenGL()
 	{
 		WordleAPI::GL::MeshCPUCash _MeshCPUCash;
 
-		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec3(-1.0f,  1.0f, 1.0f), glm::vec2(0.0f, 1.0f)));
-		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec3( 1.0f,  1.0f, 1.0f), glm::vec2(1.0f, 1.0f)));
-		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f)));
-		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec3( 1.0f, -1.0f, 1.0f), glm::vec2(1.0f, 0.0f)));
+		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec2(0.0f, 1.0f)));
+		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec2(1.0f, 1.0f)));
+		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec2(0.0f, 0.0f)));
+		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec2(1.0f, 0.0f)));
 
 		_MeshCPUCash.IBO.push_back(0);
 		_MeshCPUCash.IBO.push_back(1);
@@ -338,55 +513,35 @@ bool Wordle::Application::InitOpenGL()
 
 		if (!Quad.VBO.Create(_MeshCPUCash.VBO))
 		{
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
-
-		WordleAPI::GL::VertexBuffer::Unbind();
 
 		if (!Quad.IBO.Create(_MeshCPUCash.IBO))
 		{
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
-
-		WordleAPI::GL::IndexBuffer::Unbind();
 	}
 
 	if (!VAO.Create())
 	{
-		WordleAPI::GL::Context::Unbind();
 		return false;
 	}
 
 	if (!VAO.Bind())
 	{
-		WordleAPI::GL::Context::Unbind();
 		return false;
 	}
 
-	if (!VAO.EnableAttrib(0, 3, sizeof(WordleAPI::GL::VertexData) / sizeof(float), offsetof(WordleAPI::GL::VertexData, WordleAPI::GL::VertexData::Position) / sizeof(float)))
+	if (!VAO.EnableAttrib(0, 2, sizeof(WordleAPI::GL::VertexData) / sizeof(float), offsetof(WordleAPI::GL::VertexData, WordleAPI::GL::VertexData::Position) / sizeof(float)))
 	{
-		WordleAPI::GL::VertexAttribArray::Unbind();
-		WordleAPI::GL::Context::Unbind();
 		return false;
 	}
-
-	if (!VAO.EnableAttrib(1, 2, sizeof(WordleAPI::GL::VertexData) / sizeof(float), offsetof(WordleAPI::GL::VertexData, WordleAPI::GL::VertexData::TextureCoords) / sizeof(float)))
-	{
-		WordleAPI::GL::VertexAttribArray::Unbind();
-		WordleAPI::GL::Context::Unbind();
-		return false;
-	}
-
-	WordleAPI::GL::VertexAttribArray::Unbind();
 
 	{
 		const char* _VS = WordleAPI::GL::LoadShaderSourceFromResource(GetHInstance(), WORDLE_IDS_CIRCLE_VS);
 
 		if (!_VS)
 		{
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -395,7 +550,6 @@ bool Wordle::Application::InitOpenGL()
 		if (!_FS)
 		{
 			delete[] _VS;
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -403,7 +557,6 @@ bool Wordle::Application::InitOpenGL()
 		{
 			delete[] _VS;
 			delete[] _FS;
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -416,7 +569,6 @@ bool Wordle::Application::InitOpenGL()
 
 		if (!_VS)
 		{
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -425,7 +577,6 @@ bool Wordle::Application::InitOpenGL()
 		if (!_FS)
 		{
 			delete[] _VS;
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -433,7 +584,6 @@ bool Wordle::Application::InitOpenGL()
 		{
 			delete[] _VS;
 			delete[] _FS;
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -446,7 +596,6 @@ bool Wordle::Application::InitOpenGL()
 
 		if (!_VS)
 		{
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -455,7 +604,6 @@ bool Wordle::Application::InitOpenGL()
 		if (!_FS)
 		{
 			delete[] _VS;
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -463,7 +611,6 @@ bool Wordle::Application::InitOpenGL()
 		{
 			delete[] _VS;
 			delete[] _FS;
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -481,7 +628,6 @@ bool Wordle::Application::InitOpenGL()
 
 		if (!WordleAPI::GL::LoadTextureFromResource(_TexData, GetHInstance(), WORDLE_IDB_ALPHABET))
 		{
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
@@ -506,16 +652,11 @@ bool Wordle::Application::InitOpenGL()
 		if (!AlphabetTexture.Create(_TexData))
 		{
 			delete[] _TexData.Data;
-			WordleAPI::GL::Context::Unbind();
 			return false;
 		}
 
 		delete[] _TexData.Data;
-
-		WordleAPI::GL::Texture2D::Unbind();
 	}
-
-	WordleAPI::GL::Context::Unbind();
 
 	return true;
 }

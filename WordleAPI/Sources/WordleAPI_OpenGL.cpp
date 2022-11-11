@@ -1501,7 +1501,7 @@ char* WordleAPI::GL::LoadShaderSourceFromResource(HINSTANCE _hInstance, size_t _
 		return nullptr;
 	}
 
-	_Buff[_Len] = '\0';
+	_Buff[_Len] = 0;
 
 	for (size_t _Index = 0; _Index < _Len; _Index++)
 	{

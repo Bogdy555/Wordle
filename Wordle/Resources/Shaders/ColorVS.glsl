@@ -2,20 +2,24 @@
 
 
 
-layout (location = 0) in vec3 v_Position;
-layout (location = 1) in vec2 v_TextureCoords;
+layout (location = 0) in vec2 v_Position;
 
 
 
-out vec3 vf_Position;
-out vec2 vf_TextureCoords;
+uniform vec2 u_WndSize;
+uniform vec2 u_Size;
+uniform vec2 u_Position;
+uniform vec4 u_Color;
+
+
+
+out vec2 vf_Position;
 
 
 
 void main()
 {
-	vf_Position = v_Position;
-	vf_TextureCoords = v_TextureCoords;
+	vf_Position = v_Position * u_Size + u_Position;
 
-	gl_Position = vec4(v_Position, 1.0f);
+	gl_Position = vec4((v_Position * u_Size + u_Position) / u_WndSize * 2.0f - 1.0f, 0.0f, 1.0f);
 }

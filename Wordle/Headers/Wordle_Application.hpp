@@ -27,6 +27,24 @@ namespace Wordle
 		Window::UserData& GetWndUserData();
 		const Window::UserData& GetWndUserData() const;
 
+		WordleAPI::GL::Mesh& GetQuad();
+		const WordleAPI::GL::Mesh& GetQuad() const;
+		WordleAPI::GL::VertexAttribArray& GetVAO();
+		const WordleAPI::GL::VertexAttribArray& GetVAO() const;
+		WordleAPI::GL::Shader& GetTextureShader();
+		const WordleAPI::GL::Shader& GetTextureShader() const;
+		WordleAPI::GL::Shader& GetColorShader();
+		const WordleAPI::GL::Shader& GetColorShader() const;
+		WordleAPI::GL::Shader& GetCircleShader();
+		const WordleAPI::GL::Shader& GetCircleShader() const;
+		WordleAPI::GL::Texture2D& GetAlphabetTexture();
+		const WordleAPI::GL::Texture2D& GetAlphabetTexture() const;
+
+		void RenderSquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color);
+		void RenderCircle(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color);
+		void RenderTexture(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, WordleAPI::GL::Texture2D& _Texture, glm::vec2 _TextureMultiplier, glm::vec2 _TextureOffset);
+		void RenderFancySquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color, float _Radius);
+
 		bool UpdateFullScreen();
 
 		void Setup() override;

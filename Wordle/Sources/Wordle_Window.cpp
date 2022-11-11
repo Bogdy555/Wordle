@@ -137,27 +137,6 @@ LRESULT CALLBACK Wordle::Window::WndProc(_In_ HWND _hWnd, _In_ UINT _Msg, _In_ W
 	}
 	case WM_PAINT:
 	{
-		PAINTSTRUCT _PaintStr = { 0 };
-
-		_UserData->MutexContext.lock();
-
-		_UserData->Context.Bind();
-
-		_UserData->MutexContext.unlock();
-
-		HDC _hWndDC = BeginPaint(_hWnd, &_PaintStr);
-
-		WordleAPI::GL::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		WordleAPI::GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		WordleAPI::GL::wglSwapIntervalEXT(1);
-
-		SwapBuffers(_hWndDC);
-
-		EndPaint(_hWnd, &_PaintStr);
-
-		WordleAPI::GL::Context::Unbind();
-
 		break;
 	}
 	default:
