@@ -102,7 +102,7 @@ const bool& Wordle::Application::GetKeysPressed(const size_t _Key, const size_t 
 	return KeysPressed[_Key][_Frame];
 }
 
-void Wordle::Application::RenderSquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color)
+void Wordle::Application::RenderSquare(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, WordleAPI::Vec4 _Color)
 {
 	ColorShader.Bind();
 	VAO.Bind();
@@ -132,7 +132,7 @@ void Wordle::Application::RenderSquare(int32_t _Width, int32_t _Height, glm::vec
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-void Wordle::Application::RenderCircle(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color)
+void Wordle::Application::RenderCircle(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, WordleAPI::Vec4 _Color)
 {
 	CircleShader.Bind();
 	VAO.Bind();
@@ -162,7 +162,7 @@ void Wordle::Application::RenderCircle(int32_t _Width, int32_t _Height, glm::vec
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, WordleAPI::GL::Texture2D& _Texture, glm::vec2 _TextureMultiplier, glm::vec2 _TextureOffset, glm::vec4 _Color)
+void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, WordleAPI::GL::Texture2D& _Texture, WordleAPI::Vec2 _TextureMultiplier, WordleAPI::Vec2 _TextureOffset, WordleAPI::Vec4 _Color)
 {
 	TextureShader.Bind();
 	VAO.Bind();
@@ -206,22 +206,22 @@ void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::ve
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-void Wordle::Application::RenderFancySquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color, float _Radius)
+void Wordle::Application::RenderFancySquare(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, WordleAPI::Vec4 _Color, float _Radius)
 {
-	RenderSquare(_Width, _Height, glm::vec2(_Size.x - 2.0f * _Radius, _Size.y - 2.0f * _Radius), glm::vec2(_Position.x + _Radius, _Position.y + _Radius), _Color);
+	RenderSquare(_Width, _Height, WordleAPI::Vec2(_Size.x - 2.0f * _Radius, _Size.y - 2.0f * _Radius), WordleAPI::Vec2(_Position.x + _Radius, _Position.y + _Radius), _Color);
 
-	RenderSquare(_Width, _Height, glm::vec2(_Radius, _Size.y - 2.0f * _Radius), glm::vec2(_Position.x, _Position.y + _Radius), _Color); // Stanga
-	RenderSquare(_Width, _Height, glm::vec2(_Radius, _Size.y - 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - _Radius, _Position.y + _Radius), _Color); // Dreapta
-	RenderSquare(_Width, _Height, glm::vec2(_Size.x - 2.0f * _Radius, _Radius), glm::vec2(_Position.x + _Radius, _Position.y), _Color); // Jos
-	RenderSquare(_Width, _Height, glm::vec2(_Size.x - 2.0f * _Radius, _Radius), glm::vec2(_Position.x + _Radius, _Position.y + _Size.y - _Radius), _Color); // Sus
+	RenderSquare(_Width, _Height, WordleAPI::Vec2(_Radius, _Size.y - 2.0f * _Radius), WordleAPI::Vec2(_Position.x, _Position.y + _Radius), _Color); // Stanga
+	RenderSquare(_Width, _Height, WordleAPI::Vec2(_Radius, _Size.y - 2.0f * _Radius), WordleAPI::Vec2(_Position.x + _Size.x - _Radius, _Position.y + _Radius), _Color); // Dreapta
+	RenderSquare(_Width, _Height, WordleAPI::Vec2(_Size.x - 2.0f * _Radius, _Radius), WordleAPI::Vec2(_Position.x + _Radius, _Position.y), _Color); // Jos
+	RenderSquare(_Width, _Height, WordleAPI::Vec2(_Size.x - 2.0f * _Radius, _Radius), WordleAPI::Vec2(_Position.x + _Radius, _Position.y + _Size.y - _Radius), _Color); // Sus
 
-	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x, _Position.y), _Color); // Stanga Jos
-	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Stanga Sus
-	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y), _Color); // Dreapta Jos
-	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Dreapta Sus
+	RenderCircle(_Width, _Height, WordleAPI::Vec2(2.0f * _Radius, 2.0f * _Radius), WordleAPI::Vec2(_Position.x, _Position.y), _Color); // Stanga Jos
+	RenderCircle(_Width, _Height, WordleAPI::Vec2(2.0f * _Radius, 2.0f * _Radius), WordleAPI::Vec2(_Position.x, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Stanga Sus
+	RenderCircle(_Width, _Height, WordleAPI::Vec2(2.0f * _Radius, 2.0f * _Radius), WordleAPI::Vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y), _Color); // Dreapta Jos
+	RenderCircle(_Width, _Height, WordleAPI::Vec2(2.0f * _Radius, 2.0f * _Radius), WordleAPI::Vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Dreapta Sus
 }
 
-void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, std::vector<char>& _Cuv, glm::vec4 _Color)
+void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, std::vector<char>& _Cuv, WordleAPI::Vec4 _Color)
 {
 	for (size_t _Index = 0; _Index < _Cuv.size(); _Index++)
 	{
@@ -229,19 +229,19 @@ void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, glm::vec2 
 		{
 			size_t _X = ((size_t)(_Cuv[_Index]) - (size_t)('A')) % 6;
 			size_t _Y = 5 - ((size_t)(_Cuv[_Index]) - (size_t)('A')) / 6;
-			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2((float)(_X) / 6.0f, (float)(_Y) / 6.0f), _Color);
+			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_Cuv.size()), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2((float)(_X) / 6.0f, (float)(_Y) / 6.0f), _Color);
 		}
 		else if (_Cuv[_Index] == '>')
 		{
-			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(3.0f / 6.0f, 1.0f / 6.0f), _Color);
+			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_Cuv.size()), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2(3.0f / 6.0f, 1.0f / 6.0f), _Color);
 		}
 		else if (_Cuv[_Index] == ' ')
 		{
-			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(4.0f / 6.0f, 1.0f / 6.0f), _Color);
+			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_Cuv.size()), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2(4.0f / 6.0f, 1.0f / 6.0f), _Color);
 		}
 		else
 		{
-			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index) * _Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(2.0f / 6.0f, 1.0f / 6.0f), _Color);
+			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_Cuv.size()), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index) * _Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2(2.0f / 6.0f, 1.0f / 6.0f), _Color);
 		}
 	}
 }
@@ -545,10 +545,10 @@ bool Wordle::Application::InitOpenGL()
 	{
 		WordleAPI::GL::MeshCPUCash _MeshCPUCash;
 
-		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec2(0.0f, 1.0f)));
-		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec2(1.0f, 1.0f)));
-		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec2(0.0f, 0.0f)));
-		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(glm::vec2(1.0f, 0.0f)));
+		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(WordleAPI::Vec2(0.0f, 1.0f)));
+		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(WordleAPI::Vec2(1.0f, 1.0f)));
+		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(WordleAPI::Vec2(0.0f, 0.0f)));
+		_MeshCPUCash.VBO.push_back(WordleAPI::GL::VertexData(WordleAPI::Vec2(1.0f, 0.0f)));
 
 		_MeshCPUCash.IBO.push_back(0);
 		_MeshCPUCash.IBO.push_back(1);

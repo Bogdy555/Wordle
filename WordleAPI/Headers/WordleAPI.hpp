@@ -12,6 +12,8 @@
 
 #include "WordleAPI_Resources.hpp"
 
+#include "WordleAPI_Vector.hpp"
+
 #include "WordleAPI_Debug.hpp"
 
 #include "WordleAPI_Multiprocessing.hpp"

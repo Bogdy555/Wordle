@@ -37,9 +37,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include <glm.hpp>
-#include <gtc\matrix_transform.hpp>
-
 
 
 #pragma pack(push, 1)
@@ -122,6 +119,12 @@ namespace WordleAPI
 	typedef const uint16_t& ConstUInt16Ref;
 
 	typedef const HMODULE& ConstHModuleRef;
+
+	struct Vec2;
+
+	struct Vec3;
+
+	struct Vec4;
 
 	namespace Debug
 	{

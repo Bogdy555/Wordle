@@ -158,7 +158,7 @@ namespace WordleAPI
 
 		struct VertexData
 		{
-			glm::vec2 Position = glm::vec2(0.0f, 0.0f);
+			Vec2 Position = Vec2(0.0f, 0.0f);
 		};
 
 		class VertexBuffer

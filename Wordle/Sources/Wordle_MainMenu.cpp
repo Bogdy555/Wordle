@@ -285,7 +285,7 @@ void Wordle::MainMenu::RenderBackground()
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 
-	_Application->RenderSquare(1, 1, glm::vec2(1.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+	_Application->RenderSquare(1, 1, WordleAPI::Vec2(1.0f, 1.0f), WordleAPI::Vec2(0.0f, 0.0f), WordleAPI::Vec4(0.1f, 0.1f, 0.1f, 1.0f));
 }
 
 void Wordle::MainMenu::RenderTitle(int32_t _Width, int32_t _Height)
@@ -311,16 +311,16 @@ void Wordle::MainMenu::RenderTitle(int32_t _Width, int32_t _Height)
 
 	float _CharSize = 50.0f;
 
-	glm::vec2 _Size = glm::vec2(_CharSize * _Title.size(), _CharSize);
-	glm::vec2 _Position = glm::vec2(_CharSize, (float)(_Height) - 2.0f * _CharSize);
+	WordleAPI::Vec2 _Size = WordleAPI::Vec2(_CharSize * _Title.size(), _CharSize);
+	WordleAPI::Vec2 _Position = WordleAPI::Vec2(_CharSize, (float)(_Height) - 2.0f * _CharSize);
 
 	float _Radius = 0.2f;
 	float _BackPanelBorderSize = _CharSize / 2.0f;
 	float _FrontBackRatio = 0.8f;
 
-	glm::vec4 _ColorSquareBack = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
-	glm::vec4 _ColorSquareFront = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-	glm::vec4 _ColorText = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	WordleAPI::Vec4 _ColorSquareBack = WordleAPI::Vec4(0.05f, 0.05f, 0.05f, 1.0f);
+	WordleAPI::Vec4 _ColorSquareFront = WordleAPI::Vec4(0.1f, 0.1f, 0.1f, 1.0f);
+	WordleAPI::Vec4 _ColorText = WordleAPI::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize, _Position - _BackPanelBorderSize, _ColorSquareBack, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize));
 	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize * _FrontBackRatio, _Position - _BackPanelBorderSize * _FrontBackRatio, _ColorSquareFront, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize * _FrontBackRatio));
@@ -342,16 +342,16 @@ void Wordle::MainMenu::RenderConsoleInput(int32_t _Width, int32_t _Height)
 
 	float _CharSize = 50.0f;
 
-	glm::vec2 _Size = glm::vec2(_CharSize * _ConsoleInput.size(), _CharSize);
-	glm::vec2 _Position = glm::vec2(_CharSize, _CharSize);
+	WordleAPI::Vec2 _Size = WordleAPI::Vec2(_CharSize * _ConsoleInput.size(), _CharSize);
+	WordleAPI::Vec2 _Position = WordleAPI::Vec2(_CharSize, _CharSize);
 
 	float _Radius = 0.2f;
 	float _BackPanelBorderSize = _CharSize / 2.0f;
 	float _FrontBackRatio = 0.8f;
 
-	glm::vec4 _ColorSquareBack = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
-	glm::vec4 _ColorSquareFront = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-	glm::vec4 _ColorText = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	WordleAPI::Vec4 _ColorSquareBack = WordleAPI::Vec4(0.05f, 0.05f, 0.05f, 1.0f);
+	WordleAPI::Vec4 _ColorSquareFront = WordleAPI::Vec4(0.1f, 0.1f, 0.1f, 1.0f);
+	WordleAPI::Vec4 _ColorText = WordleAPI::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize, _Position - _BackPanelBorderSize, _ColorSquareBack, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize));
 	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize * _FrontBackRatio, _Position - _BackPanelBorderSize * _FrontBackRatio, _ColorSquareFront, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize * _FrontBackRatio));

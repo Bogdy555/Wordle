@@ -51,6 +51,9 @@
     <ClInclude Include="Headers\WordleAPI_Macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\WordleAPI_Vector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\WordleAPI_Time.cpp">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\WordleAPI_Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\WordleAPI_Vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
