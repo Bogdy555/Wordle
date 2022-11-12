@@ -40,10 +40,14 @@ namespace Wordle
 		WordleAPI::GL::Texture2D& GetAlphabetTexture();
 		const WordleAPI::GL::Texture2D& GetAlphabetTexture() const;
 
+		bool& GetKeysPressed(const size_t _Key, const size_t _Frame);
+		const bool& GetKeysPressed(const size_t _Key, const size_t _Frame) const;
+
 		void RenderSquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color);
 		void RenderCircle(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color);
 		void RenderTexture(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, WordleAPI::GL::Texture2D& _Texture, glm::vec2 _TextureMultiplier, glm::vec2 _TextureOffset);
 		void RenderFancySquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color, float _Radius);
+		void RenderText(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, std::vector<char>& _Cuv);
 
 		bool UpdateFullScreen();
 
@@ -71,6 +75,8 @@ namespace Wordle
 		WordleAPI::GL::Shader ColorShader;
 		WordleAPI::GL::Shader CircleShader;
 		WordleAPI::GL::Texture2D AlphabetTexture;
+
+		bool KeysPressed[256][2];
 
 	};
 

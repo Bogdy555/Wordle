@@ -2,7 +2,7 @@
 
 
 
-Wordle::Application::Application() : WordleAPI::Application(), Wnd(), WndUserData(), Quad(), VAO(), TextureShader(), ColorShader(), CircleShader(), AlphabetTexture()
+Wordle::Application::Application() : WordleAPI::Application(), Wnd(), WndUserData(), Quad(), VAO(), TextureShader(), ColorShader(), CircleShader(), AlphabetTexture(), KeysPressed()
 {
 
 }
@@ -90,6 +90,16 @@ WordleAPI::GL::Texture2D& Wordle::Application::GetAlphabetTexture()
 const WordleAPI::GL::Texture2D& Wordle::Application::GetAlphabetTexture() const
 {
 	return AlphabetTexture;
+}
+
+bool& Wordle::Application::GetKeysPressed(const size_t _Key, const size_t _Frame)
+{
+	return KeysPressed[_Key][_Frame];
+}
+
+const bool& Wordle::Application::GetKeysPressed(const size_t _Key, const size_t _Frame) const
+{
+	return KeysPressed[_Key][_Frame];
 }
 
 void Wordle::Application::RenderSquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color)
@@ -205,6 +215,31 @@ void Wordle::Application::RenderFancySquare(int32_t _Width, int32_t _Height, glm
 	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Stanga Sus
 	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y), _Color); // Dreapta Jos
 	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Dreapta Sus
+}
+
+void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, std::vector<char>& _Cuv)
+{
+	for (size_t _Index = 0; _Index < _Cuv.size(); _Index++)
+	{
+		if (_Cuv[_Index] >= 'A' && _Cuv[_Index] <= 'Z')
+		{
+			size_t _X = ((size_t)(_Cuv[_Index]) - (size_t)('A')) % 6;
+			size_t _Y = 5 - ((size_t)(_Cuv[_Index]) - (size_t)('A')) / 6;
+			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2((float)(_X) / 6.0f, (float)(_Y) / 6.0f));
+		}
+		else if (_Cuv[_Index] == '>')
+		{
+			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(3.0f / 6.0f, 1.0f / 6.0f));
+		}
+		else if (_Cuv[_Index] == ' ')
+		{
+			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(4.0f / 6.0f, 1.0f / 6.0f));
+		}
+		else
+		{
+			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index) * _Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(2.0f / 6.0f, 1.0f / 6.0f));
+		}
+	}
 }
 
 bool Wordle::Application::UpdateFullScreen()
@@ -416,6 +451,13 @@ bool Wordle::Application::InitWindow()
 		return false;
 	}
 
+	WndUserData.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+	if (!WndUserData.hCursor)
+	{
+		return false;
+	}
+
 	WNDCLASSEX _WndClass = { 0 };
 
 	_WndClass.cbSize = sizeof(WNDCLASSEX);
@@ -425,7 +467,7 @@ bool Wordle::Application::InitWindow()
 	_WndClass.cbWndExtra = 0;
 	_WndClass.hInstance = GetHInstance();
 	_WndClass.hIcon = WndUserData.hIcon;
-	_WndClass.hCursor = NULL;
+	_WndClass.hCursor = WndUserData.hCursor;
 	_WndClass.hbrBackground = NULL;
 	_WndClass.lpszMenuName = nullptr;
 	_WndClass.lpszClassName = L"WndClassWordle";

@@ -38,7 +38,8 @@ namespace Wordle
 		void Animations() override;
 		void FrameBuild() override;
 
-		bool KeysPressed[256][2];
+		bool& GetKeysPressed(const size_t _Key, const size_t _Frame);
+		const bool& GetKeysPressed(const size_t _Key, const size_t _Frame) const;
 
 	};
 

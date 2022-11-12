@@ -42,6 +42,12 @@ namespace Wordle
 
 			std::mutex MutexHIcon;
 			HICON hIcon = NULL;
+
+			std::mutex MutexHCursor;
+			HCURSOR hCursor = NULL;
+
+			std::mutex MutexChar;
+			std::vector<char> Char;
 		};
 
 		bool Init(WordleAPI::Window* _Wnd);

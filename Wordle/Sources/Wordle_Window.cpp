@@ -112,22 +112,13 @@ LRESULT CALLBACK Wordle::Window::WndProc(_In_ HWND _hWnd, _In_ UINT _Msg, _In_ W
 
 		break;
 	}
-	case WM_SETCURSOR:
+	case WM_CHAR:
 	{
-		WORD _LoLParam = LOWORD(_lParam);
+		_UserData->MutexChar.lock();
 
-		switch (_LoLParam)
-		{
-		case HTCLIENT:
-		{
-			SetCursor(NULL);
-			break;
-		}
-		default:
-		{
-			return DefWindowProc(_hWnd, _Msg, _wParam, _lParam);
-		}
-		}
+		_UserData->Char.push_back((char)(_wParam));
+
+		_UserData->MutexChar.unlock();
 
 		break;
 	}

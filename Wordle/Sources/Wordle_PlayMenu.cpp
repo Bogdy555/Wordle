@@ -2,7 +2,7 @@
 
 
 
-Wordle::PlayMenu::PlayMenu() : WordleAPI::Menu(), KeysPressed()
+Wordle::PlayMenu::PlayMenu() : WordleAPI::Menu()
 {
 
 }
@@ -14,8 +14,6 @@ Wordle::PlayMenu::~PlayMenu()
 
 void Wordle::PlayMenu::Setup()
 {
-	DeleteInputs();
-
 	TurnOn();
 }
 
@@ -57,8 +55,8 @@ void Wordle::PlayMenu::Input()
 
 	for (size_t _Index = 0; _Index < 256; _Index++)
 	{
-		KeysPressed[_Index][WordleAPI::_Previous] = KeysPressed[_Index][WordleAPI::_Current];
-		KeysPressed[_Index][WordleAPI::_Current] = _WndUserData->KeysPressed[_Index];
+		GetKeysPressed(_Index, WordleAPI::_Previous) = GetKeysPressed(_Index, WordleAPI::_Current);
+		GetKeysPressed(_Index, WordleAPI::_Current) = _WndUserData->KeysPressed[_Index];
 	}
 
 	_WndUserData->MutexKeysPressed.unlock();
@@ -68,19 +66,29 @@ void Wordle::PlayMenu::DeleteInputs()
 {
 	for (size_t _Index = 0; _Index < 256; _Index++)
 	{
-		KeysPressed[_Index][WordleAPI::_Previous] = false;
-		KeysPressed[_Index][WordleAPI::_Current] = false;
+		GetKeysPressed(_Index, WordleAPI::_Previous) = false;
+		GetKeysPressed(_Index, WordleAPI::_Current) = false;
 	}
+
+	Application* _Application = (Application*)(GetApplicationObj());
+
+	Window::UserData* _WndUserData = &_Application->GetWndUserData();
+
+	_WndUserData->MutexChar.lock();
+
+	_WndUserData->Char.clear();
+
+	_WndUserData->MutexChar.unlock();
 }
 
 void Wordle::PlayMenu::Keys()
 {
-	if (KeysPressed[VK_ESCAPE][WordleAPI::_Current])
+	if (!GetKeysPressed(VK_ESCAPE, WordleAPI::_Previous) && GetKeysPressed(VK_ESCAPE, WordleAPI::_Current))
 	{
 		Close(_MainMenu);
 	}
 
-	if (!KeysPressed[VK_F11][WordleAPI::_Previous] && KeysPressed[VK_F11][WordleAPI::_Current])
+	if (!GetKeysPressed(VK_F11, WordleAPI::_Previous) && GetKeysPressed(VK_F11, WordleAPI::_Current))
 	{
 		Application* _Application = (Application*)(GetApplicationObj());
 
@@ -89,6 +97,16 @@ void Wordle::PlayMenu::Keys()
 			_Application->Close(WordleAPI::_ReturnError);
 		}
 	}
+
+	Application* _Application = (Application*)(GetApplicationObj());
+
+	Window::UserData* _WndUserData = &_Application->GetWndUserData();
+
+	_WndUserData->MutexChar.lock();
+
+	_WndUserData->Char.clear();
+
+	_WndUserData->MutexChar.unlock();
 }
 
 void Wordle::PlayMenu::Mouse()
@@ -132,7 +150,7 @@ void Wordle::PlayMenu::FrameBuild()
 
 	WordleAPI::Window* _Wnd = &_Application->GetWnd();
 
-	Wordle::Window::UserData* _WndUserData = &_Application->GetWndUserData();
+	Window::UserData* _WndUserData = &_Application->GetWndUserData();
 
 
 
@@ -170,7 +188,7 @@ void Wordle::PlayMenu::FrameBuild()
 
 
 
-
+	// TODO
 
 
 
@@ -186,4 +204,14 @@ void Wordle::PlayMenu::FrameBuild()
 	WordleAPI::GL::Shader::Unbind();
 	WordleAPI::GL::Texture2D::Unbind();
 	WordleAPI::GL::Context::Unbind();
+}
+
+bool& Wordle::PlayMenu::GetKeysPressed(const size_t _Key, const size_t _Frame)
+{
+	return ((Application*)(GetApplicationObj()))->GetKeysPressed(_Key, _Frame);
+}
+
+const bool& Wordle::PlayMenu::GetKeysPressed(const size_t _Key, const size_t _Frame) const
+{
+	return ((Application*)(GetApplicationObj()))->GetKeysPressed(_Key, _Frame);
 }
