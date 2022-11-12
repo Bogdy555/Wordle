@@ -45,9 +45,9 @@ namespace Wordle
 
 		void RenderSquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color);
 		void RenderCircle(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color);
-		void RenderTexture(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, WordleAPI::GL::Texture2D& _Texture, glm::vec2 _TextureMultiplier, glm::vec2 _TextureOffset);
+		void RenderTexture(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, WordleAPI::GL::Texture2D& _Texture, glm::vec2 _TextureMultiplier, glm::vec2 _TextureOffset, glm::vec4 _Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		void RenderFancySquare(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, glm::vec4 _Color, float _Radius);
-		void RenderText(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, std::vector<char>& _Cuv);
+		void RenderText(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, std::vector<char>& _Cuv, glm::vec4 _Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 		bool UpdateFullScreen();
 

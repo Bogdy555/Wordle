@@ -162,7 +162,7 @@ void Wordle::Application::RenderCircle(int32_t _Width, int32_t _Height, glm::vec
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, WordleAPI::GL::Texture2D& _Texture, glm::vec2 _TextureMultiplier, glm::vec2 _TextureOffset)
+void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, WordleAPI::GL::Texture2D& _Texture, glm::vec2 _TextureMultiplier, glm::vec2 _TextureOffset, glm::vec4 _Color)
 {
 	TextureShader.Bind();
 	VAO.Bind();
@@ -177,6 +177,7 @@ void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::ve
 	WordleAPI::GL::Uniform u_Texture;
 	WordleAPI::GL::Uniform u_TextureMultiplier;
 	WordleAPI::GL::Uniform u_TextureOffset;
+	WordleAPI::GL::Uniform u_Color;
 
 	u_WndSize.GetLocation(TextureShader, "u_WndSize");
 	u_Size.GetLocation(TextureShader, "u_Size");
@@ -184,6 +185,7 @@ void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::ve
 	u_Texture.GetLocation(TextureShader, "u_Texture");
 	u_TextureMultiplier.GetLocation(TextureShader, "u_TextureMultiplier");
 	u_TextureOffset.GetLocation(TextureShader, "u_TextureOffset");
+	u_Color.GetLocation(TextureShader, "u_Color");
 
 	u_WndSize.Set2f((float)(_Width), (float)(_Height));
 	u_Size.Set2f(_Size.x, _Size.y);
@@ -191,6 +193,7 @@ void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::ve
 	u_Texture.Set1i(0);
 	u_TextureMultiplier.Set2f(_TextureMultiplier.x, _TextureMultiplier.y);
 	u_TextureOffset.Set2f(_TextureOffset.x, _TextureOffset.y);
+	u_Color.Set4f(_Color.x, _Color.y, _Color.z, _Color.w);
 
 	u_WndSize.ReleaseLocation();
 	u_Size.ReleaseLocation();
@@ -198,6 +201,7 @@ void Wordle::Application::RenderTexture(int32_t _Width, int32_t _Height, glm::ve
 	u_Texture.ReleaseLocation();
 	u_TextureMultiplier.ReleaseLocation();
 	u_TextureOffset.ReleaseLocation();
+	u_Color.ReleaseLocation();
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
@@ -217,7 +221,7 @@ void Wordle::Application::RenderFancySquare(int32_t _Width, int32_t _Height, glm
 	RenderCircle(_Width, _Height, glm::vec2(2.0f * _Radius, 2.0f * _Radius), glm::vec2(_Position.x + _Size.x - 2.0f * _Radius, _Position.y + _Size.y - 2.0f * _Radius), _Color); // Dreapta Sus
 }
 
-void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, std::vector<char>& _Cuv)
+void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, glm::vec2 _Size, glm::vec2 _Position, std::vector<char>& _Cuv, glm::vec4 _Color)
 {
 	for (size_t _Index = 0; _Index < _Cuv.size(); _Index++)
 	{
@@ -225,19 +229,19 @@ void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, glm::vec2 
 		{
 			size_t _X = ((size_t)(_Cuv[_Index]) - (size_t)('A')) % 6;
 			size_t _Y = 5 - ((size_t)(_Cuv[_Index]) - (size_t)('A')) / 6;
-			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2((float)(_X) / 6.0f, (float)(_Y) / 6.0f));
+			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2((float)(_X) / 6.0f, (float)(_Y) / 6.0f), _Color);
 		}
 		else if (_Cuv[_Index] == '>')
 		{
-			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(3.0f / 6.0f, 1.0f / 6.0f));
+			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(3.0f / 6.0f, 1.0f / 6.0f), _Color);
 		}
 		else if (_Cuv[_Index] == ' ')
 		{
-			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(4.0f / 6.0f, 1.0f / 6.0f));
+			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(4.0f / 6.0f, 1.0f / 6.0f), _Color);
 		}
 		else
 		{
-			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index) * _Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(2.0f / 6.0f, 1.0f / 6.0f));
+			RenderTexture(_Width, _Height, glm::vec2(_Size.x / (float)(_Cuv.size()), _Size.y), glm::vec2(_Position.x + (float)(_Index) * _Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, glm::vec2(1.0f / 6.0f, 1.0f / 6.0f), glm::vec2(2.0f / 6.0f, 1.0f / 6.0f), _Color);
 		}
 	}
 }

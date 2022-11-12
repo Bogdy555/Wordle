@@ -12,6 +12,7 @@ uniform vec2 u_Position;
 uniform sampler2D u_Texture;
 uniform vec2 u_TextureMultiplier;
 uniform vec2 u_TextureOffset;
+uniform vec4 u_Color;
 
 
 

@@ -154,8 +154,8 @@
 
 #define WORDLEAPI_DEBUG_BREAK() WordleAPI::Debug::Break()
 
-#define WORDLEAPI_DEBUG_BREAK_MSG_A(Msg) WordleAPI::Debug::Break(); MessageBoxA(NULL, Msg, "Debug break!", MB_OK | MB_ICONERROR)
-#define WORDLEAPI_DEBUG_BREAK_MSG_W(Msg) WordleAPI::Debug::Break(); MessageBoxW(NULL, Msg, L"Debug break!", MB_OK | MB_ICONERROR)
+#define WORDLEAPI_DEBUG_BREAK_MSG_A(Msg) MessageBoxA(NULL, Msg, "Debug break!", MB_OK | MB_ICONERROR); WordleAPI::Debug::Break()
+#define WORDLEAPI_DEBUG_BREAK_MSG_W(Msg) MessageBoxW(NULL, Msg, L"Debug break!", MB_OK | MB_ICONERROR); WordleAPI::Debug::Break()
 
 #ifdef UNICODE
 
