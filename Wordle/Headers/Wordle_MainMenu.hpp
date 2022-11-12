@@ -38,6 +38,10 @@ namespace Wordle
 		void Animations() override;
 		void FrameBuild() override;
 
+		void RenderBackground();
+		void RenderTitle(int32_t _Width, int32_t _Height);
+		void RenderConsoleInput(int32_t _Width, int32_t _Height);
+
 		bool& GetKeysPressed(const size_t _Key, const size_t _Frame);
 		const bool& GetKeysPressed(const size_t _Key, const size_t _Frame) const;
 

@@ -256,16 +256,14 @@ void Wordle::MainMenu::FrameBuild()
 	WordleAPI::GL::glEnable(GL_BLEND);
 	WordleAPI::GL::glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	WordleAPI::GL::glViewport(0, 0, _Width, _Height);
-	WordleAPI::GL::glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+	WordleAPI::GL::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	WordleAPI::GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 
-	std::vector<char> _PromptStr;
-	_PromptStr.push_back('>');
-
-	_Application->RenderText(_Width, _Height, glm::vec2(40.0f * _PromptStr.size(), 40.0f), glm::vec2(10.0f, 10.0f), _PromptStr);
-	_Application->RenderText(_Width, _Height, glm::vec2(40.0f * ConsoleInput.size(), 40.0f), glm::vec2(10.0f + 40.0f * _PromptStr.size(), 10.0f), ConsoleInput);
+	RenderBackground();
+	RenderTitle(_Width, _Height);
+	RenderConsoleInput(_Width, _Height);
 
 
 
@@ -281,6 +279,83 @@ void Wordle::MainMenu::FrameBuild()
 	WordleAPI::GL::Shader::Unbind();
 	WordleAPI::GL::Texture2D::Unbind();
 	WordleAPI::GL::Context::Unbind();
+}
+
+void Wordle::MainMenu::RenderBackground()
+{
+	Application* _Application = (Application*)(GetApplicationObj());
+
+	_Application->RenderSquare(1, 1, glm::vec2(1.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+}
+
+void Wordle::MainMenu::RenderTitle(int32_t _Width, int32_t _Height)
+{
+	Application* _Application = (Application*)(GetApplicationObj());
+
+	std::vector<char> _Title;
+
+	_Title.push_back('W');
+	_Title.push_back('O');
+	_Title.push_back('R');
+	_Title.push_back('D');
+	_Title.push_back('L');
+	_Title.push_back('E');
+	_Title.push_back(' ');
+	_Title.push_back('C');
+	_Title.push_back('O');
+	_Title.push_back('N');
+	_Title.push_back('S');
+	_Title.push_back('O');
+	_Title.push_back('L');
+	_Title.push_back('E');
+
+	float _CharSize = 50.0f;
+
+	glm::vec2 _Size = glm::vec2(_CharSize * _Title.size(), _CharSize);
+	glm::vec2 _Position = glm::vec2(_CharSize, (float)(_Height) - 2.0f * _CharSize);
+
+	float _Radius = 0.2f;
+	float _BackPanelBorderSize = _CharSize / 2.0f;
+	float _FrontBackRatio = 0.8f;
+
+	glm::vec4 _ColorSquareBack = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
+	glm::vec4 _ColorSquareFront = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+	glm::vec4 _ColorText = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize, _Position - _BackPanelBorderSize, _ColorSquareBack, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize));
+	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize * _FrontBackRatio, _Position - _BackPanelBorderSize * _FrontBackRatio, _ColorSquareFront, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize * _FrontBackRatio));
+	_Application->RenderText(_Width, _Height, _Size, _Position, _Title, _ColorText);
+}
+
+void Wordle::MainMenu::RenderConsoleInput(int32_t _Width, int32_t _Height)
+{
+	Application* _Application = (Application*)(GetApplicationObj());
+
+	std::vector<char> _ConsoleInput;
+
+	_ConsoleInput.push_back('>');
+
+	for (size_t _Index = 0; _Index < ConsoleInput.size(); _Index++)
+	{
+		_ConsoleInput.push_back(ConsoleInput[_Index]);
+	}
+
+	float _CharSize = 50.0f;
+
+	glm::vec2 _Size = glm::vec2(_CharSize * _ConsoleInput.size(), _CharSize);
+	glm::vec2 _Position = glm::vec2(_CharSize, _CharSize);
+
+	float _Radius = 0.2f;
+	float _BackPanelBorderSize = _CharSize / 2.0f;
+	float _FrontBackRatio = 0.8f;
+
+	glm::vec4 _ColorSquareBack = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
+	glm::vec4 _ColorSquareFront = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+	glm::vec4 _ColorText = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize, _Position - _BackPanelBorderSize, _ColorSquareBack, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize));
+	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize * _FrontBackRatio, _Position - _BackPanelBorderSize * _FrontBackRatio, _ColorSquareFront, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize * _FrontBackRatio));
+	_Application->RenderText(_Width, _Height, _Size, _Position, _ConsoleInput, _ColorText);
 }
 
 bool& Wordle::MainMenu::GetKeysPressed(const size_t _Key, const size_t _Frame)
