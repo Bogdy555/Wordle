@@ -261,7 +261,7 @@ void Wordle::MainMenu::FrameBuild()
 
 
 
-	RenderBackground();
+	RenderBackground(_Width, _Height);
 	RenderTitle(_Width, _Height);
 	RenderConsoleInput(_Width, _Height);
 
@@ -281,7 +281,7 @@ void Wordle::MainMenu::FrameBuild()
 	WordleAPI::GL::Context::Unbind();
 }
 
-void Wordle::MainMenu::RenderBackground()
+void Wordle::MainMenu::RenderBackground(int32_t _Width, int32_t _Height)
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 

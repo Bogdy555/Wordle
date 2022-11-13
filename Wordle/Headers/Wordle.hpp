@@ -12,6 +12,8 @@
 
 #include "Wordle_Resources.hpp"
 
+#include "Wordle_Lerpers.hpp"
+
 #include "Wordle_Window.hpp"
 
 #include "Wordle_Application.hpp"

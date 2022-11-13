@@ -192,7 +192,17 @@ namespace WordleAPI
 
 	}
 
+	template<typename T> struct AnimationState;
+
+	template<typename T> class Animation;
+
+	template<typename T, const T (*Lerper)(const T, const T, const float)> class AnimationLerp;
+
 }
+
+
+
+#include "WordleAPI_Animation.hpp"
 
 
 

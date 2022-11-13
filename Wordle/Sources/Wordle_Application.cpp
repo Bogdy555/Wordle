@@ -92,6 +92,16 @@ const WordleAPI::GL::Texture2D& Wordle::Application::GetAlphabetTexture() const
 	return AlphabetTexture;
 }
 
+std::vector<std::vector<char>>& Wordle::Application::GetDatabaseCuvinte()
+{
+	return DatabaseCuvinte;
+}
+
+const std::vector<std::vector<char>>& Wordle::Application::GetDatabaseCuvinte() const
+{
+	return DatabaseCuvinte;
+}
+
 bool& Wordle::Application::GetKeysPressed(const size_t _Key, const size_t _Frame)
 {
 	return KeysPressed[_Key][_Frame];
@@ -242,6 +252,31 @@ void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, WordleAPI:
 		else
 		{
 			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_Cuv.size()), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index) * _Size.x / (float)(_Cuv.size()), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2(2.0f / 6.0f, 1.0f / 6.0f), _Color);
+		}
+	}
+}
+
+void Wordle::Application::RenderText(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, char* _Cuv, size_t _LenCuv, WordleAPI::Vec4 _Color)
+{
+	for (size_t _Index = 0; _Index < _LenCuv; _Index++)
+	{
+		if (_Cuv[_Index] >= 'A' && _Cuv[_Index] <= 'Z')
+		{
+			size_t _X = ((size_t)(_Cuv[_Index]) - (size_t)('A')) % 6;
+			size_t _Y = 5 - ((size_t)(_Cuv[_Index]) - (size_t)('A')) / 6;
+			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_LenCuv), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_LenCuv), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2((float)(_X) / 6.0f, (float)(_Y) / 6.0f), _Color);
+		}
+		else if (_Cuv[_Index] == '>')
+		{
+			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_LenCuv), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_LenCuv), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2(3.0f / 6.0f, 1.0f / 6.0f), _Color);
+		}
+		else if (_Cuv[_Index] == ' ')
+		{
+			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_LenCuv), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_LenCuv), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2(4.0f / 6.0f, 1.0f / 6.0f), _Color);
+		}
+		else
+		{
+			RenderTexture(_Width, _Height, WordleAPI::Vec2(_Size.x / (float)(_LenCuv), _Size.y), WordleAPI::Vec2(_Position.x + (float)(_Index)*_Size.x / (float)(_LenCuv), _Position.y), AlphabetTexture, WordleAPI::Vec2(1.0f / 6.0f, 1.0f / 6.0f), WordleAPI::Vec2(2.0f / 6.0f, 1.0f / 6.0f), _Color);
 		}
 	}
 }

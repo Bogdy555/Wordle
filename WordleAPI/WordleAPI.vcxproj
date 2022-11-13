@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\WordleAPI_Animation.hpp" />
     <ClInclude Include="Headers\WordleAPI_Vector.hpp" />
     <ClInclude Include="Headers\WordleAPI_Application.hpp" />
     <ClInclude Include="Headers\WordleAPI_Debug.hpp" />

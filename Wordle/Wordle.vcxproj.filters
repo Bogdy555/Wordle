@@ -38,6 +38,9 @@
     <ClCompile Include="Sources\Wordle_Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Wordle_Lerpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Wordle.hpp">
@@ -62,6 +65,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Wordle_Window.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Wordle_Lerpers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

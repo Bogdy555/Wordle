@@ -38,7 +38,7 @@ namespace Wordle
 		void Animations() override;
 		void FrameBuild() override;
 
-		void RenderBackground();
+		void RenderBackground(int32_t _Width, int32_t _Height);
 		void RenderTitle(int32_t _Width, int32_t _Height);
 		void RenderConsoleInput(int32_t _Width, int32_t _Height);
 

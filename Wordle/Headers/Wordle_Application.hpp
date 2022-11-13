@@ -40,6 +40,9 @@ namespace Wordle
 		WordleAPI::GL::Texture2D& GetAlphabetTexture();
 		const WordleAPI::GL::Texture2D& GetAlphabetTexture() const;
 
+		std::vector<std::vector<char>>& GetDatabaseCuvinte();
+		const std::vector<std::vector<char>>& GetDatabaseCuvinte() const;
+
 		bool& GetKeysPressed(const size_t _Key, const size_t _Frame);
 		const bool& GetKeysPressed(const size_t _Key, const size_t _Frame) const;
 
@@ -48,6 +51,7 @@ namespace Wordle
 		void RenderTexture(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, WordleAPI::GL::Texture2D& _Texture, WordleAPI::Vec2 _TextureMultiplier, WordleAPI::Vec2 _TextureOffset, WordleAPI::Vec4 _Color = WordleAPI::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		void RenderFancySquare(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, WordleAPI::Vec4 _Color, float _Radius);
 		void RenderText(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, std::vector<char>& _Cuv, WordleAPI::Vec4 _Color = WordleAPI::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		void RenderText(int32_t _Width, int32_t _Height, WordleAPI::Vec2 _Size, WordleAPI::Vec2 _Position, char* _Cuv, size_t _LenCuv, WordleAPI::Vec4 _Color = WordleAPI::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 		bool UpdateFullScreen();
 
