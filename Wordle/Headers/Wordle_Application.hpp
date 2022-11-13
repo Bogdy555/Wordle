@@ -66,6 +66,9 @@ namespace Wordle
 		bool InitOpenGL();
 		void DestroyOpenGL();
 
+		bool LoadDatabaseCuvinte();
+		void DestroyDatabaseCuvinte();
+
 		WordleAPI::Window Wnd;
 		Window::UserData WndUserData;
 
@@ -75,6 +78,8 @@ namespace Wordle
 		WordleAPI::GL::Shader ColorShader;
 		WordleAPI::GL::Shader CircleShader;
 		WordleAPI::GL::Texture2D AlphabetTexture;
+
+		std::vector<std::vector<char>> DatabaseCuvinte;
 
 		bool KeysPressed[256][2];
 

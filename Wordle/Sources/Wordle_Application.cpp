@@ -2,7 +2,7 @@
 
 
 
-Wordle::Application::Application() : WordleAPI::Application(), Wnd(), WndUserData(), Quad(), VAO(), TextureShader(), ColorShader(), CircleShader(), AlphabetTexture(), KeysPressed()
+Wordle::Application::Application() : WordleAPI::Application(), Wnd(), WndUserData(), Quad(), VAO(), TextureShader(), ColorShader(), CircleShader(), AlphabetTexture(), DatabaseCuvinte(), KeysPressed()
 {
 
 }
@@ -398,6 +398,14 @@ void Wordle::Application::Setup()
 		return;
 	}
 
+	if (!LoadDatabaseCuvinte())
+	{
+		Close(WordleAPI::_ReturnError);
+		return;
+	}
+
+	srand((unsigned int)(time(nullptr)));
+
 	TurnOn();
 	SetCurrentMenu(_MainMenu);
 }
@@ -440,6 +448,8 @@ void Wordle::Application::Update()
 void Wordle::Application::Stop()
 {
 	Wnd.Show(SW_HIDE);
+
+	DestroyDatabaseCuvinte();
 
 	DestroyOpenGL();
 
@@ -716,4 +726,64 @@ void Wordle::Application::DestroyOpenGL()
 	ColorShader.Destroy();
 	CircleShader.Destroy();
 	AlphabetTexture.Destroy();
+}
+
+bool Wordle::Application::LoadDatabaseCuvinte()
+{
+	HRSRC _hResource = FindResource(GetHInstance(), MAKEINTRESOURCE(WORDLE_IDT_WORDLIST), MAKEINTRESOURCE(WORDLEAPI_TEXT_RES));
+
+	if (!_hResource)
+	{
+		return false;
+	}
+
+	size_t _Len = SizeofResource(GetHInstance(), _hResource);
+
+	if (!_Len || _Len % 7 != 0)
+	{
+		return false;
+	}
+
+	HGLOBAL _hGlobal = LoadResource(GetHInstance(), _hResource);
+
+	if (!_hGlobal)
+	{
+		return false;
+	}
+
+	const unsigned char* _ResourcePtr = (const unsigned char*)(LockResource(_hGlobal));
+
+	if (!_ResourcePtr)
+	{
+		FreeResource(_hGlobal);
+		return false;
+	}
+
+	for (size_t _Index = 0; _Index < _Len / 7; _Index++)
+	{
+		DatabaseCuvinte.push_back(std::vector<char>());
+	}
+
+	for (size_t _Index = 0; _Index < _Len; _Index++)
+	{
+		if (_Index % 7 < 5)
+		{
+			DatabaseCuvinte[_Index / 7].push_back(_ResourcePtr[_Index]);
+		}
+	}
+
+	UnlockResource(_hGlobal);
+	FreeResource(_hGlobal);
+
+	return true;
+}
+
+void Wordle::Application::DestroyDatabaseCuvinte()
+{
+	for (size_t _Index = 0; _Index < DatabaseCuvinte.size(); _Index++)
+	{
+		DatabaseCuvinte[_Index].clear();
+	}
+
+	DatabaseCuvinte.clear();
 }

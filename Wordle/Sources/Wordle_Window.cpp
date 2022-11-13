@@ -56,10 +56,30 @@ LRESULT CALLBACK Wordle::Window::WndProc(_In_ HWND _hWnd, _In_ UINT _Msg, _In_ W
 	}
 	case WM_GETMINMAXINFO:
 	{
+		RECT _ClientAndWindowRect = { 0 };
+
+		_ClientAndWindowRect.left = 0;
+		_ClientAndWindowRect.right = 800;
+		_ClientAndWindowRect.top = 0;
+		_ClientAndWindowRect.bottom = 450;
+
+		_UserData->MutexFullScreen.lock();
+
+		if (_UserData->FullScreen)
+		{
+			AdjustWindowRectEx(&_ClientAndWindowRect, WS_POPUP, FALSE, NULL);
+		}
+		else
+		{
+			AdjustWindowRectEx(&_ClientAndWindowRect, WS_OVERLAPPEDWINDOW, FALSE, NULL);
+		}
+
+		_UserData->MutexFullScreen.unlock();
+
 		LPMINMAXINFO _MinMaxInfo = (LPMINMAXINFO)(_lParam);
 
-		_MinMaxInfo->ptMinTrackSize.x = 700;
-		_MinMaxInfo->ptMinTrackSize.y = 400;
+		_MinMaxInfo->ptMinTrackSize.x = _ClientAndWindowRect.right - _ClientAndWindowRect.left;
+		_MinMaxInfo->ptMinTrackSize.y = _ClientAndWindowRect.bottom - _ClientAndWindowRect.top;
 
 		break;
 	}
