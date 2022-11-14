@@ -21,6 +21,8 @@ namespace Wordle
 		PlayMenu(PlayMenu&& _Other) noexcept = delete;
 		~PlayMenu();
 
+		const uint64_t GetMenuType() const;
+
 		void Setup() override;
 		void Update() override;
 		void Stop() override;
@@ -38,10 +40,10 @@ namespace Wordle
 		void Animations() override;
 		void FrameBuild() override;
 
-		void RenderBackground(int32_t _Width, int32_t _Height);
-		void RenderPreviousPreviousGuess(int32_t _Width, int32_t _Height);
-		void RenderPreviousGuess(int32_t _Width, int32_t _Height);
-		void RenderCurrentGuess(int32_t _Width, int32_t _Height);
+		void RenderBackground(const int32_t _Width, const int32_t _Height);
+		void RenderPreviousPreviousGuess(const int32_t _Width, const int32_t _Height);
+		void RenderPreviousGuess(const int32_t _Width, const int32_t _Height);
+		void RenderCurrentGuess(const int32_t _Width, const int32_t _Height);
 
 		bool& GetKeysPressed(const size_t _Key, const size_t _Frame);
 		const bool& GetKeysPressed(const size_t _Key, const size_t _Frame) const;

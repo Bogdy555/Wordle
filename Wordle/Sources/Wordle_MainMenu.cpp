@@ -2,7 +2,7 @@
 
 
 
-Wordle::MainMenu::MainMenu() : WordleAPI::Menu(), ConsoleInput()
+Wordle::MainMenu::MainMenu() : WordleAPI::Menu(), ConsoleInput(), AnimationTrigger(false), AnimationIsActive(false), AnimationTimeActive(0.0f), Animation()
 {
 
 }
@@ -12,8 +12,16 @@ Wordle::MainMenu::~MainMenu()
 
 }
 
+const uint64_t Wordle::MainMenu::GetMenuType() const
+{
+	return _MainMenu;
+}
+
 void Wordle::MainMenu::Setup()
 {
+	Animation.GetStates().push_back(WordleAPI::AnimationState<float>(1.0f, 0.0f, 0.3f));
+	Animation.GetStates().push_back(WordleAPI::AnimationState<float>(0.0f, 0.3f, 0.3f));
+
 	TurnOn();
 }
 
@@ -171,13 +179,9 @@ void Wordle::MainMenu::Keys()
 		}
 		else
 		{
-			ConsoleInput.clear();
+			ConsoleInput.erase(ConsoleInput.begin() + ConsoleInput.size() - 1);
 
-			ConsoleInput.push_back('E');
-			ConsoleInput.push_back('R');
-			ConsoleInput.push_back('R');
-			ConsoleInput.push_back('O');
-			ConsoleInput.push_back('R');
+			AnimationTrigger = true;
 		}
 	}
 }
@@ -214,7 +218,29 @@ void Wordle::MainMenu::Engine()
 
 void Wordle::MainMenu::Animations()
 {
+	if (AnimationIsActive)
+	{
+		AnimationTimeActive += GetTimeStepRatio() * GetTimeStep();
 
+		if (AnimationTimeActive < Animation.GetStates()[Animation.GetStates().size() - 1].End)
+		{
+			Animation.Update(GetTimeStepRatio() * GetTimeStep());
+		}
+		else
+		{
+			AnimationIsActive = false;
+			AnimationTimeActive = 0.0f;
+			Animation.Reset();
+		}
+	}
+
+	if (AnimationTrigger)
+	{
+		AnimationTrigger = false;
+		AnimationIsActive = true;
+		AnimationTimeActive = 0.0f;
+		Animation.Reset();
+	}
 }
 
 void Wordle::MainMenu::FrameBuild()
@@ -281,14 +307,14 @@ void Wordle::MainMenu::FrameBuild()
 	WordleAPI::GL::Context::Unbind();
 }
 
-void Wordle::MainMenu::RenderBackground(int32_t _Width, int32_t _Height)
+void Wordle::MainMenu::RenderBackground(const int32_t _Width, const int32_t _Height)
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 
 	_Application->RenderSquare(1, 1, WordleAPI::Vec2(1.0f, 1.0f), WordleAPI::Vec2(0.0f, 0.0f), WordleAPI::Vec4(0.1f, 0.1f, 0.1f, 1.0f));
 }
 
-void Wordle::MainMenu::RenderTitle(int32_t _Width, int32_t _Height)
+void Wordle::MainMenu::RenderTitle(const int32_t _Width, const int32_t _Height)
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 
@@ -327,7 +353,7 @@ void Wordle::MainMenu::RenderTitle(int32_t _Width, int32_t _Height)
 	_Application->RenderText(_Width, _Height, _Size, _Position, _Title, _ColorText);
 }
 
-void Wordle::MainMenu::RenderConsoleInput(int32_t _Width, int32_t _Height)
+void Wordle::MainMenu::RenderConsoleInput(const int32_t _Width, const int32_t _Height)
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 
@@ -352,6 +378,11 @@ void Wordle::MainMenu::RenderConsoleInput(int32_t _Width, int32_t _Height)
 	WordleAPI::Vec4 _ColorSquareBack = WordleAPI::Vec4(0.05f, 0.05f, 0.05f, 1.0f);
 	WordleAPI::Vec4 _ColorSquareFront = WordleAPI::Vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	WordleAPI::Vec4 _ColorText = WordleAPI::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	if (AnimationIsActive)
+	{
+		_ColorSquareBack = LerpVec4(_ColorSquareBack, WordleAPI::Vec4(1.0f, 0.0f, 0.0f, 1.0f), Animation.GetCurrentState());
+	}
 
 	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize, _Position - _BackPanelBorderSize, _ColorSquareBack, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize));
 	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize * _FrontBackRatio, _Position - _BackPanelBorderSize * _FrontBackRatio, _ColorSquareFront, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize * _FrontBackRatio));

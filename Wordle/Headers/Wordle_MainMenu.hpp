@@ -21,6 +21,8 @@ namespace Wordle
 		MainMenu(MainMenu&& _Other) noexcept = delete;
 		~MainMenu();
 
+		const uint64_t GetMenuType() const;
+
 		void Setup() override;
 		void Update() override;
 		void Stop() override;
@@ -38,14 +40,19 @@ namespace Wordle
 		void Animations() override;
 		void FrameBuild() override;
 
-		void RenderBackground(int32_t _Width, int32_t _Height);
-		void RenderTitle(int32_t _Width, int32_t _Height);
-		void RenderConsoleInput(int32_t _Width, int32_t _Height);
+		void RenderBackground(const int32_t _Width, const int32_t _Height);
+		void RenderTitle(const int32_t _Width, const int32_t _Height);
+		void RenderConsoleInput(const int32_t _Width, const int32_t _Height);
 
 		bool& GetKeysPressed(const size_t _Key, const size_t _Frame);
 		const bool& GetKeysPressed(const size_t _Key, const size_t _Frame) const;
 
 		std::vector<char> ConsoleInput;
+
+		bool AnimationTrigger;
+		bool AnimationIsActive;
+		float AnimationTimeActive;
+		WordleAPI::AnimationLerp<float, LerpFloat> Animation;
 
 	};
 

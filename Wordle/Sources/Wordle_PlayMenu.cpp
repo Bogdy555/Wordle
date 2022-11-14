@@ -16,6 +16,11 @@ Wordle::PlayMenu::~PlayMenu()
 
 }
 
+const uint64_t Wordle::PlayMenu::GetMenuType() const
+{
+	return _PlayMenu;
+}
+
 void Wordle::PlayMenu::Setup()
 {
 	IndexCurrentGuess = rand() % ((Application*)(GetApplicationObj()))->GetDatabaseCuvinte().size();
@@ -345,14 +350,14 @@ void Wordle::PlayMenu::FrameBuild()
 	WordleAPI::GL::Context::Unbind();
 }
 
-void Wordle::PlayMenu::RenderBackground(int32_t _Width, int32_t _Height)
+void Wordle::PlayMenu::RenderBackground(const int32_t _Width, const int32_t _Height)
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 
 	_Application->RenderSquare(1, 1, WordleAPI::Vec2(1.0f, 1.0f), WordleAPI::Vec2(0.0f, 0.0f), WordleAPI::Vec4(0.1f, 0.1f, 0.1f, 1.0f));
 }
 
-void Wordle::PlayMenu::RenderPreviousPreviousGuess(int32_t _Width, int32_t _Height)
+void Wordle::PlayMenu::RenderPreviousPreviousGuess(const int32_t _Width, const int32_t _Height)
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 
@@ -408,7 +413,7 @@ void Wordle::PlayMenu::RenderPreviousPreviousGuess(int32_t _Width, int32_t _Heig
 	}
 }
 
-void Wordle::PlayMenu::RenderPreviousGuess(int32_t _Width, int32_t _Height)
+void Wordle::PlayMenu::RenderPreviousGuess(const int32_t _Width, const int32_t _Height)
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 
@@ -464,7 +469,7 @@ void Wordle::PlayMenu::RenderPreviousGuess(int32_t _Width, int32_t _Height)
 	}
 }
 
-void Wordle::PlayMenu::RenderCurrentGuess(int32_t _Width, int32_t _Height)
+void Wordle::PlayMenu::RenderCurrentGuess(const int32_t _Width, const int32_t _Height)
 {
 	Application* _Application = (Application*)(GetApplicationObj());
 
