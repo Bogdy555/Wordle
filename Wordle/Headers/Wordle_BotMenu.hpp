@@ -44,6 +44,7 @@ namespace Wordle
 		void RenderPreviousPreviousGuess(const int32_t _Width, const int32_t _Height);
 		void RenderPreviousGuess(const int32_t _Width, const int32_t _Height);
 		void RenderCurrentGuess(const int32_t _Width, const int32_t _Height);
+		void RenderProgressBar(const int32_t _Width, const int32_t _Height);
 
 		bool& GetKeysPressed(const size_t _Key, const size_t _Frame);
 		const bool& GetKeysPressed(const size_t _Key, const size_t _Frame) const;
@@ -64,6 +65,8 @@ namespace Wordle
 		WordleAPI::Multiprocessing::Process BotProc;
 		WordleAPI::Multiprocessing::SharedMemory BotSharedMemory;
 		WordleAPI::Multiprocessing::SharedMutex BotSharedMutex;
+
+		EXECUTION_STATE ExecutionState;
 
 	};
 

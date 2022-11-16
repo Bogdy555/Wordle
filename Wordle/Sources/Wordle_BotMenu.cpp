@@ -7,7 +7,8 @@ Wordle::BotMenu::BotMenu() :
 	IndexPreviousPreviousGuess(0), IndexPreviousGuess(0), IndexCurrentGuess(0),
 	PreviousPreviousGuess(), PreviousGuess(), CurrentGuess(),
 	AnimationTrigger(false), AnimationIsActive(false), AnimationTimeActive(0.0f), Animation(),
-	BotProc(), BotSharedMemory(), BotSharedMutex()
+	BotProc(), BotSharedMemory(), BotSharedMutex(),
+	ExecutionState(NULL)
 {
 
 }
@@ -74,6 +75,14 @@ void Wordle::BotMenu::Setup()
 		return;
 	}
 
+	ExecutionState = SetThreadExecutionState(ES_CONTINUOUS | ES_AWAYMODE_REQUIRED | ES_SYSTEM_REQUIRED | ES_DISPLAY_REQUIRED);
+
+	if (!ExecutionState)
+	{
+		GetApplicationObj()->Close(WordleAPI::_ReturnError);
+		return;
+	}
+
 	TurnOn();
 }
 
@@ -89,6 +98,11 @@ void Wordle::BotMenu::Update()
 
 void Wordle::BotMenu::Stop()
 {
+	if (ExecutionState)
+	{
+		SetThreadExecutionState(ExecutionState);
+		ExecutionState = NULL;
+	}
 	BotProc.Destroy(0);
 	BotSharedMemory.Destroy();
 	BotSharedMutex.Destroy();
@@ -369,6 +383,7 @@ void Wordle::BotMenu::FrameBuild()
 	RenderPreviousPreviousGuess(_Width, _Height);
 	RenderPreviousGuess(_Width, _Height);
 	RenderCurrentGuess(_Width, _Height);
+	RenderProgressBar(_Width, _Height);
 
 
 
@@ -531,6 +546,20 @@ void Wordle::BotMenu::RenderCurrentGuess(const int32_t _Width, const int32_t _He
 	_Application->RenderFancySquare(_Width, _Height, _Size + 2.0f * _BackPanelBorderSize * _FrontBackRatio, _Position - _BackPanelBorderSize * _FrontBackRatio, _ColorSquareFront, _Radius * (_Size.y + 2.0f * _BackPanelBorderSize * _FrontBackRatio));
 
 	_Application->RenderText(_Width, _Height, _Size * WordleAPI::Vec2((float)(CurrentGuess.size()) / 5.0f, 1.0f), _Position, CurrentGuess, _ColorText);
+}
+
+void Wordle::BotMenu::RenderProgressBar(const int32_t _Width, const int32_t _Height)
+{
+	Application* _Application = (Application*)(GetApplicationObj());
+
+	WordleAPI::Vec2 _Size = WordleAPI::Vec2(30.0f, (float)((size_t)(LerpFloat(0.0f, (float)(_Height), (float)(IndexCurrentGuess) / (float)(_Application->GetDatabaseCuvinte().size())))));
+	WordleAPI::Vec2 _Position = WordleAPI::Vec2(0.0f, 0.0f);
+	WordleAPI::Vec4 _Color = WordleAPI::Vec4(0.2f, 0.7f, 0.2f, 1.0f);
+
+	if (_Size.y)
+	{
+		_Application->RenderSquare(_Width, _Height, _Size, _Position, _Color);
+	}
 }
 
 bool& Wordle::BotMenu::GetKeysPressed(const size_t _Key, const size_t _Frame)
