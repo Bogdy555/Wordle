@@ -296,7 +296,7 @@ WordleAPI::Multiprocessing::SharedMemory::operator unsigned char* ()
 	return Buff;
 }
 
-WordleAPI::Multiprocessing::SharedMemory::operator const unsigned char* ()
+WordleAPI::Multiprocessing::SharedMemory::operator const unsigned char* () const
 {
 	return Buff;
 }

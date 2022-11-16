@@ -50,7 +50,7 @@
 namespace WordleAPI
 {
 
-	enum _States : size_t
+	enum _States : const size_t
 	{
 		_Previous = 0,
 		_Current = 1
@@ -106,6 +106,20 @@ namespace WordleAPI
 		_ConsoleBkgLightPurple = 208,
 		_ConsoleBkgLightYellow = 224,
 		_ConsoleBkgWhite = 240
+	};
+
+	enum _CharStates : const uint8_t
+	{
+		_Wrong = 0,
+		_Exists = 1,
+		_Right = 2
+	};
+
+	enum _IPCStates : const uint8_t
+	{
+		_NullState = 0,
+		_WordState = 1,
+		_FeedbackState = 2
 	};
 
 	typedef const tm& ConstTimeRef;
@@ -191,6 +205,8 @@ namespace WordleAPI
 		class Texture2D;
 
 	}
+
+	class Bot;
 
 	template<typename T> struct AnimationState;
 

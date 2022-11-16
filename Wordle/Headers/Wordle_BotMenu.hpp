@@ -61,6 +61,10 @@ namespace Wordle
 		float AnimationTimeActive;
 		WordleAPI::AnimationLerp<float, LerpFloat> Animation;
 
+		WordleAPI::Multiprocessing::Process BotProc;
+		WordleAPI::Multiprocessing::SharedMemory BotSharedMemory;
+		WordleAPI::Multiprocessing::SharedMutex BotSharedMutex;
+
 	};
 
 }

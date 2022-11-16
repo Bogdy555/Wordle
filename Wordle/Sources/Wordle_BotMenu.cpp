@@ -6,7 +6,8 @@ Wordle::BotMenu::BotMenu() :
 	WordleAPI::Menu(),
 	IndexPreviousPreviousGuess(0), IndexPreviousGuess(0), IndexCurrentGuess(0),
 	PreviousPreviousGuess(), PreviousGuess(), CurrentGuess(),
-	AnimationTrigger(false), AnimationIsActive(false), AnimationTimeActive(0.0f), Animation()
+	AnimationTrigger(false), AnimationIsActive(false), AnimationTimeActive(0.0f), Animation(),
+	BotProc(), BotSharedMemory(), BotSharedMutex()
 {
 
 }
@@ -23,7 +24,7 @@ const uint64_t Wordle::BotMenu::GetMenuType() const
 
 void Wordle::BotMenu::Setup()
 {
-	IndexCurrentGuess = rand() % ((Application*)(GetApplicationObj()))->GetDatabaseCuvinte().size();
+	IndexCurrentGuess = 0;
 
 	WORDLEAPI_DEBUG_CALL(WordleAPI::Debug::SetTextAttribute(WordleAPI::_ConsoleTxtLightGreen));
 	WORDLEAPI_LOG(WORDLEAPI_STRING("[LOG_TRACE] Current word is: "));
@@ -44,6 +45,35 @@ void Wordle::BotMenu::Setup()
 	Animation.GetStates().push_back(WordleAPI::AnimationState<float>(50.0f, 0.7f * 0.5f, 0.8f * 0.5f));
 	Animation.GetStates().push_back(WordleAPI::AnimationState<float>(0.0f, 0.8f * 0.5f, 0.9f * 0.5f));
 
+	if (!BotSharedMutex.Create(L"WordleBotComunicationMutex"))
+	{
+		GetApplicationObj()->Close(WordleAPI::_ReturnError);
+		return;
+	}
+
+	if (!BotSharedMemory.Create(L"WordleBotComunicationMemory", 6))
+	{
+		GetApplicationObj()->Close(WordleAPI::_ReturnError);
+		return;
+	}
+
+	BotSharedMutex.Lock();
+
+	BotSharedMemory[0] = WordleAPI::_NullState;
+	BotSharedMemory[1] = 0;
+	BotSharedMemory[2] = 0;
+	BotSharedMemory[3] = 0;
+	BotSharedMemory[4] = 0;
+	BotSharedMemory[5] = 0;
+
+	BotSharedMutex.Unlock();
+
+	if (!BotProc.Create(L".\\WordleBot.exe"))
+	{
+		GetApplicationObj()->Close(WordleAPI::_ReturnError);
+		return;
+	}
+
 	TurnOn();
 }
 
@@ -59,7 +89,9 @@ void Wordle::BotMenu::Update()
 
 void Wordle::BotMenu::Stop()
 {
-
+	BotProc.Destroy(0);
+	BotSharedMemory.Destroy();
+	BotSharedMutex.Destroy();
 }
 
 void Wordle::BotMenu::Input()
@@ -167,6 +199,99 @@ void Wordle::BotMenu::Engine()
 	}
 
 	_WndUserData->MutexError.unlock();
+
+	if (!BotProc.UpdateStatus())
+	{
+		GetApplicationObj()->Close(WordleAPI::_ReturnError);
+	}
+	else
+	{
+		BotSharedMutex.Lock();
+
+		if (BotSharedMemory[0] == WordleAPI::_WordState)
+		{
+			IndexPreviousPreviousGuess = IndexPreviousGuess;
+			PreviousPreviousGuess = PreviousGuess;
+
+			IndexPreviousGuess = IndexCurrentGuess;
+			PreviousGuess = CurrentGuess;
+
+			CurrentGuess.clear();
+
+			if (PreviousGuess == _Application->GetDatabaseCuvinte()[IndexPreviousGuess])
+			{
+				IndexCurrentGuess++;
+
+				if (IndexCurrentGuess == _Application->GetDatabaseCuvinte().size())
+				{
+					Close(_MainMenu);
+				}
+				else
+				{
+					CurrentGuess.push_back((char)(BotSharedMemory[1]));
+					CurrentGuess.push_back((char)(BotSharedMemory[2]));
+					CurrentGuess.push_back((char)(BotSharedMemory[3]));
+					CurrentGuess.push_back((char)(BotSharedMemory[4]));
+					CurrentGuess.push_back((char)(BotSharedMemory[5]));
+
+					WORDLEAPI_DEBUG_CALL(WordleAPI::Debug::SetTextAttribute(WordleAPI::_ConsoleTxtLightGreen));
+					WORDLEAPI_LOG(WORDLEAPI_STRING("[LOG_TRACE] Current word is: "));
+					WORDLEAPI_LOG(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][0]);
+					WORDLEAPI_LOG(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][1]);
+					WORDLEAPI_LOG(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][2]);
+					WORDLEAPI_LOG(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][3]);
+					WORDLEAPI_LOG(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][4]);
+					WORDLEAPI_LOG(WORDLEAPI_STRING('\n'));
+				}
+			}
+			else
+			{
+				CurrentGuess.push_back((char)(BotSharedMemory[1]));
+				CurrentGuess.push_back((char)(BotSharedMemory[2]));
+				CurrentGuess.push_back((char)(BotSharedMemory[3]));
+				CurrentGuess.push_back((char)(BotSharedMemory[4]));
+				CurrentGuess.push_back((char)(BotSharedMemory[5]));
+			}
+
+			if (CurrentGuess.size())
+			{
+				WORDLEAPI_DEBUG_CALL(WordleAPI::Debug::SetTextAttribute(WordleAPI::_ConsoleTxtPurple));
+				WORDLEAPI_LOG(WORDLEAPI_STRING("[LOG_TRACE] Current guess is: "));
+
+				BotSharedMemory[0] = WordleAPI::_FeedbackState;
+
+				for (size_t _Index = 0; _Index < 5; _Index++)
+				{
+					if (_Application->GetDatabaseCuvinte()[IndexCurrentGuess][_Index] == CurrentGuess[_Index])
+					{
+						WORDLEAPI_DEBUG_CALL(WordleAPI::Debug::SetTextAttribute(WordleAPI::_ConsoleTxtLightGreen));
+						WORDLEAPI_LOG(CurrentGuess[_Index]);
+						BotSharedMemory[_Index + 1] = WordleAPI::_Right;
+					}
+					else if (_Application->GetDatabaseCuvinte()[IndexCurrentGuess][0] == CurrentGuess[_Index] || _Application->GetDatabaseCuvinte()[IndexCurrentGuess][1] == CurrentGuess[_Index] || _Application->GetDatabaseCuvinte()[IndexCurrentGuess][2] == CurrentGuess[_Index] || _Application->GetDatabaseCuvinte()[IndexCurrentGuess][3] == CurrentGuess[_Index] || _Application->GetDatabaseCuvinte()[IndexCurrentGuess][4] == CurrentGuess[_Index])
+					{
+						WORDLEAPI_DEBUG_CALL(WordleAPI::Debug::SetTextAttribute(WordleAPI::_ConsoleTxtYellow));
+						WORDLEAPI_LOG(CurrentGuess[_Index]);
+						BotSharedMemory[_Index + 1] = WordleAPI::_Exists;
+					}
+					else
+					{
+						WORDLEAPI_DEBUG_CALL(WordleAPI::Debug::SetTextAttribute(WordleAPI::_ConsoleTxtGrey));
+						WORDLEAPI_LOG(CurrentGuess[_Index]);
+						BotSharedMemory[_Index + 1] = WordleAPI::_Wrong;
+					}
+				}
+
+				WORDLEAPI_LOG(WORDLEAPI_STRING('\n'));
+			}
+			else
+			{
+				BotSharedMemory[0] = WordleAPI::_NullState;
+			}
+		}
+
+		BotSharedMutex.Unlock();
+	}
 }
 
 void Wordle::BotMenu::Animations()

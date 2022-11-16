@@ -22,15 +22,20 @@
     <ResourceCompile Include="Resources\WordleBot_Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\WordleBot_DatabaseLoader.cpp" />
     <ClCompile Include="Sources\WordleBot_EntryPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\WordleBot_DatabaseLoader.hpp" />
     <ClInclude Include="Headers\WordleBot_Dependencies.hpp" />
     <ClInclude Include="Headers\WordleBot_Resources.hpp" />
     <ClInclude Include="Headers\WordleBot.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Icons\Main Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Text\WordList.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

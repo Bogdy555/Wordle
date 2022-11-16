@@ -28,6 +28,8 @@
 
 #include "WordleAPI_OpenGL.hpp"
 
+#include "WordleAPI_Bot.hpp"
+
 
 
 #endif

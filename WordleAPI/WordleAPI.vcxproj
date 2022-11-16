@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\WordleAPI_Animation.hpp" />
+    <ClInclude Include="Headers\WordleAPI_Bot.hpp" />
     <ClInclude Include="Headers\WordleAPI_Vector.hpp" />
     <ClInclude Include="Headers\WordleAPI_Application.hpp" />
     <ClInclude Include="Headers\WordleAPI_Debug.hpp" />
@@ -36,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\WordleAPI_Application.cpp" />
+    <ClCompile Include="Sources\WordleAPI_Bot.cpp" />
     <ClCompile Include="Sources\WordleAPI_Debug.cpp" />
     <ClCompile Include="Sources\WordleAPI_Menu.cpp" />
     <ClCompile Include="Sources\WordleAPI_Multiprocessing.cpp" />

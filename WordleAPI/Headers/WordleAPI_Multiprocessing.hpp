@@ -67,7 +67,7 @@ namespace WordleAPI
 			const unsigned char* Data() const;
 
 			operator unsigned char* ();
-			operator const unsigned char* ();
+			operator const unsigned char* () const;
 
 			unsigned char& operator* ();
 			const unsigned char& operator* () const;

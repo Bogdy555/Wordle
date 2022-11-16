@@ -12,6 +12,8 @@
 
 #include "WordleBot_Resources.hpp"
 
+#include "WordleBot_DatabaseLoader.hpp"
+
 
 
 #endif

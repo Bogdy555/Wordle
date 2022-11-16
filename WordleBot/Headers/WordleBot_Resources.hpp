@@ -19,6 +19,8 @@
 
 #define WORDLEBOT_IDI_MAIN_ICON 100
 
+#define WORDLEBOT_IDT_WORDLIST 101
+
 
 
 #endif
