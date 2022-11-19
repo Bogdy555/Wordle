@@ -34,9 +34,6 @@
   <ItemGroup>
     <Image Include="Resources\Icons\Main Icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\Text\WordList.txt" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -415,6 +415,12 @@ void Wordle::Application::Setup()
 
 	GetSharedInstanceMutex().Unlock();
 
+	if (!SuitableScreenSize())
+	{
+		Close(WordleAPI::_ReturnError);
+		return;
+	}
+
 	if (!InitWindow())
 	{
 		Close(WordleAPI::_ReturnError);
@@ -489,6 +495,46 @@ void Wordle::Application::Stop()
 	DestroyOpenGL();
 
 	DestroyWindow();
+}
+
+bool Wordle::Application::SuitableScreenSize()
+{
+	RECT _WndRect = { 0 };
+
+	_WndRect.left = 0;
+	_WndRect.right = 800;
+	_WndRect.top = 0;
+	_WndRect.bottom = 450;
+
+	if (!AdjustWindowRectEx(&_WndRect, WS_OVERLAPPEDWINDOW, false, NULL))
+	{
+		return false;
+	}
+
+	HMONITOR _hMonitor = MonitorFromPoint(POINT(0, 0), MONITOR_DEFAULTTOPRIMARY);
+
+	if (!_hMonitor)
+	{
+		return false;
+	}
+
+	MONITORINFOEX _MonitorInfo = { 0 };
+
+	_MonitorInfo.cbSize = sizeof(MONITORINFOEX);
+
+	if (!GetMonitorInfo(_hMonitor, &_MonitorInfo))
+	{
+		return false;
+	}
+
+	int32_t _Offset = 50;
+
+	if (_MonitorInfo.rcMonitor.right - _MonitorInfo.rcMonitor.left < _WndRect.right - _WndRect.left + _Offset || _MonitorInfo.rcMonitor.bottom - _MonitorInfo.rcMonitor.top < _WndRect.bottom - _WndRect.top + _Offset)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool Wordle::Application::InitWindow()

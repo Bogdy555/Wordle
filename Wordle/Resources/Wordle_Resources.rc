@@ -26,7 +26,7 @@ WORDLE_IDB_ALPHABET BITMAP L".\\Textures\\Alphabet.bmp"
 
 
 
-WORDLE_IDT_WORDLIST WORDLEAPI_TEXT_RES L".\\Text\\WordList.txt"
+WORDLE_IDT_WORDLIST WORDLEAPI_TEXT_RES L"..\\..\\Solution Items\\Resources\\Text\\WordList.txt"
 
 
 

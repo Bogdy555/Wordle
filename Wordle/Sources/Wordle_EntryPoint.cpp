@@ -17,10 +17,19 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 		return -1;
 	}
 
+	if (CoInitializeEx(nullptr, COINIT::COINIT_MULTITHREADED) != S_OK)
+	{
+		WordleAPI::GL::Unload();
+		WordleAPI::Time::Stop();
+		MessageBox(NULL, L"An unexpected error occurred!", L"Error", MB_OK | MB_ICONERROR);
+		return -1;
+	}
+
 	WORDLEAPI_DEBUG_CALL
 	(
 		if (!WordleAPI::Debug::Init())
 		{
+			CoUninitialize();
 			WordleAPI::GL::Unload();
 			WordleAPI::Time::Stop();
 			MessageBox(NULL, L"An unexpected error occurred!", L"Error", MB_OK | MB_ICONERROR);
@@ -33,6 +42,8 @@ int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance
 	int32_t _ReturnVal = _Application.Run(_hInstance, _CmdLine, _ShowCmd, L"WordleMemory", L"WordleMutex");
 
 	WORDLEAPI_DEBUG_CALL(WordleAPI::Debug::Stop());
+
+	CoUninitialize();
 
 	WordleAPI::GL::Unload();
 

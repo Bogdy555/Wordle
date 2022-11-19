@@ -16,6 +16,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WordleBot", "WordleBot\Word
 		{68C3E485-470B-472E-9037-D5C55E2C3445} = {68C3E485-470B-472E-9037-D5C55E2C3445}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49DC84E3-BC3A-4072-9B0E-E05A9D3AD1F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{1FDD1981-1E49-4674-AB41-A2A4A33867B9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Text", "Text", "{43A912A7-81A3-406E-9CFC-47B7CDD6C7C1}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\Resources\Text\WordList.txt = Solution Items\Resources\Text\WordList.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +60,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1FDD1981-1E49-4674-AB41-A2A4A33867B9} = {49DC84E3-BC3A-4072-9B0E-E05A9D3AD1F5}
+		{43A912A7-81A3-406E-9CFC-47B7CDD6C7C1} = {1FDD1981-1E49-4674-AB41-A2A4A33867B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {29741911-A567-43A7-8EF5-FAAE1EC7BA76}

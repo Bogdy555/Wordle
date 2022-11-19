@@ -64,6 +64,8 @@ namespace Wordle
 
 	private:
 
+		bool SuitableScreenSize();
+
 		bool InitWindow();
 		void DestroyWindow();
 

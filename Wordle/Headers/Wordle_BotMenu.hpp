@@ -46,6 +46,8 @@ namespace Wordle
 		void RenderCurrentGuess(const int32_t _Width, const int32_t _Height);
 		void RenderProgressBar(const int32_t _Width, const int32_t _Height);
 
+		void SaveGuesses();
+
 		bool& GetKeysPressed(const size_t _Key, const size_t _Frame);
 		const bool& GetKeysPressed(const size_t _Key, const size_t _Frame) const;
 
@@ -67,6 +69,8 @@ namespace Wordle
 		WordleAPI::Multiprocessing::SharedMutex BotSharedMutex;
 
 		EXECUTION_STATE ExecutionState;
+
+		std::vector<std::vector<std::vector<char>>> ListOfGuesses;
 
 	};
 

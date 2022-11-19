@@ -46,9 +46,6 @@
     <Image Include="Resources\Textures\Alphabet.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Resources\Text\WordList.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Shaders\CircleFS.glsl" />
     <None Include="Resources\Shaders\CircleVS.glsl" />
     <None Include="Resources\Shaders\ColorFS.glsl" />

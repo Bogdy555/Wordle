@@ -8,7 +8,8 @@ Wordle::BotMenu::BotMenu() :
 	PreviousPreviousGuess(), PreviousGuess(), CurrentGuess(),
 	AnimationTrigger(false), AnimationIsActive(false), AnimationTimeActive(0.0f), Animation(),
 	BotProc(), BotSharedMemory(), BotSharedMutex(),
-	ExecutionState(NULL)
+	ExecutionState(NULL),
+	ListOfGuesses()
 {
 
 }
@@ -45,6 +46,22 @@ void Wordle::BotMenu::Setup()
 	Animation.GetStates().push_back(WordleAPI::AnimationState<float>(0.0f, 0.6f * 0.5f, 0.7f * 0.5f));
 	Animation.GetStates().push_back(WordleAPI::AnimationState<float>(50.0f, 0.7f * 0.5f, 0.8f * 0.5f));
 	Animation.GetStates().push_back(WordleAPI::AnimationState<float>(0.0f, 0.8f * 0.5f, 0.9f * 0.5f));
+
+	{
+		std::vector<std::vector<char>> _FirstList;
+
+		std::vector<char> _Cuv;
+
+		_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][0]);
+		_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][1]);
+		_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][2]);
+		_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][3]);
+		_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][4]);
+
+		_FirstList.push_back(_Cuv);
+
+		ListOfGuesses.push_back(_FirstList);
+	}
 
 	if (!BotSharedMutex.Create(L"WordleBotComunicationMutex"))
 	{
@@ -98,6 +115,11 @@ void Wordle::BotMenu::Update()
 
 void Wordle::BotMenu::Stop()
 {
+	if (ListOfGuesses.size() == ((Application*)(GetApplicationObj()))->GetDatabaseCuvinte().size())
+	{
+		SaveGuesses();
+	}
+
 	if (ExecutionState)
 	{
 		SetThreadExecutionState(ExecutionState);
@@ -256,6 +278,22 @@ void Wordle::BotMenu::Engine()
 					WORDLEAPI_LOG(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][3]);
 					WORDLEAPI_LOG(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][4]);
 					WORDLEAPI_LOG(WORDLEAPI_STRING('\n'));
+
+					{
+						std::vector<std::vector<char>> _NextList;
+
+						std::vector<char> _Cuv;
+
+						_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][0]);
+						_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][1]);
+						_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][2]);
+						_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][3]);
+						_Cuv.push_back(((Application*)(GetApplicationObj()))->GetDatabaseCuvinte()[IndexCurrentGuess][4]);
+
+						_NextList.push_back(_Cuv);
+
+						ListOfGuesses.push_back(_NextList);
+					}
 				}
 			}
 			else
@@ -297,6 +335,18 @@ void Wordle::BotMenu::Engine()
 				}
 
 				WORDLEAPI_LOG(WORDLEAPI_STRING('\n'));
+
+				{
+					std::vector<char> _Cuv;
+
+					_Cuv.push_back(CurrentGuess[0]);
+					_Cuv.push_back(CurrentGuess[1]);
+					_Cuv.push_back(CurrentGuess[2]);
+					_Cuv.push_back(CurrentGuess[3]);
+					_Cuv.push_back(CurrentGuess[4]);
+
+					ListOfGuesses[ListOfGuesses.size() - 1].push_back(_Cuv);
+				}
 			}
 			else
 			{
@@ -559,6 +609,61 @@ void Wordle::BotMenu::RenderProgressBar(const int32_t _Width, const int32_t _Hei
 	if (_Size.y)
 	{
 		_Application->RenderSquare(_Width, _Height, _Size, _Position, _Color);
+	}
+}
+
+void Wordle::BotMenu::SaveGuesses()
+{
+	Application* _Application = (Application*)(GetApplicationObj());
+
+	wchar_t _Path[MAX_PATH + 1];
+	ZeroMemory(_Path, (MAX_PATH + 1) * sizeof(wchar_t));
+
+	OPENFILENAME _OpenFileName = { 0 };
+
+	_OpenFileName.lStructSize = sizeof(OPENFILENAME);
+	_OpenFileName.hwndOwner = _Application->GetWnd();
+	_OpenFileName.hInstance = _Application->GetHInstance();
+	_OpenFileName.lpstrFilter = L"All files\0*.*\0Text\0*.txt\0";
+	_OpenFileName.nFilterIndex = 1;
+	_OpenFileName.lpstrFile = _Path;
+	_OpenFileName.nMaxFile = MAX_PATH + 1;
+	_OpenFileName.lpstrTitle = L"Save all of the guesses";
+	_OpenFileName.Flags = OFN_DONTADDTORECENT | OFN_ENABLESIZING | OFN_OVERWRITEPROMPT;
+
+	if (GetSaveFileName(&_OpenFileName))
+	{
+		std::wofstream fOut;
+		fOut.open(_Path, std::ios::binary);
+
+		if (!fOut.is_open())
+		{
+			_Application->Close(WordleAPI::_ReturnError);
+			return;
+		}
+
+		for (size_t _IndexList = 0; _IndexList < ListOfGuesses.size(); _IndexList++)
+		{
+			for (size_t _IndexGuess = 0; _IndexGuess < ListOfGuesses[_IndexList].size(); _IndexGuess++)
+			{
+				fOut << ListOfGuesses[_IndexList][_IndexGuess][0];
+				fOut << ListOfGuesses[_IndexList][_IndexGuess][1];
+				fOut << ListOfGuesses[_IndexList][_IndexGuess][2];
+				fOut << ListOfGuesses[_IndexList][_IndexGuess][3];
+				fOut << ListOfGuesses[_IndexList][_IndexGuess][4];
+
+				if (_IndexGuess != ListOfGuesses[_IndexList].size() - 1)
+				{
+					fOut << L',';
+					fOut << L' ';
+				}
+			}
+			fOut << L"\r\n";
+		}
+
+		fOut.close();
+
+		ShellExecute(_Application->GetWnd(), L"open", _Path, nullptr, nullptr, SW_SHOW);
 	}
 }
 

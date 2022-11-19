@@ -13,7 +13,7 @@ WORDLEBOT_IDI_MAIN_ICON ICON L".\\Icons\\Main Icon.ico"
 
 
 
-WORDLEBOT_IDT_WORDLIST WORDLEAPI_TEXT_RES L".\\Text\\WordList.txt"
+WORDLEBOT_IDT_WORDLIST WORDLEAPI_TEXT_RES L"..\\..\\Solution Items\\Resources\\Text\\WordList.txt"
 
 
 
