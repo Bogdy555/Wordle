@@ -52,6 +52,7 @@ void WordleAPI::Bot::GenerateFeedbacks(std::vector<uint8_t> _CurrentPattern, uin
 	}
 }
 
+// TO BE CHANGED
 int32_t WordleAPI::Bot::RemainingWords(std::vector<uint8_t> _Pattern, std::vector<char> _Guess) 
 {
 	uint32_t _DeletedWords = 0;
@@ -70,6 +71,9 @@ int32_t WordleAPI::Bot::RemainingWords(std::vector<uint8_t> _Pattern, std::vecto
 				for (char c : curr)
 					if (c == _Guess[i])
 						found = true;
+
+				if (curr[i] == _Guess[i])
+					found = false;
 
 				if (!found)
 					validWord = false;
@@ -139,8 +143,8 @@ double_t WordleAPI::Bot::ComputeEntropy(std::vector<char> _Guess)
 
 const std::vector<char> WordleAPI::Bot::GetGuess()
 {
-	std::cout << DatabaseCuvinte.size() << '\n';
-	if (FirstGuess) {
+	if (FirstGuess) 
+	{
 		FirstGuess = false;
 		return FIRST_GUESS;
 	}
@@ -168,56 +172,66 @@ const std::vector<char> WordleAPI::Bot::GetGuess()
 
 void WordleAPI::Bot::SendFeedback(const std::vector<uint8_t>& _Feedback, const std::vector<char>& _Guess)
 {
-	for (size_t _Index = 0; _Index < 5; _Index++)
+	std::vector<std::vector<char> > _NewList;
+	for (size_t _WordIndex = 0; _WordIndex < DatabaseCuvinte.size(); ++_WordIndex) 
 	{
-		switch (_Feedback[_Index])
+		bool _ValidWord = true;
+		for (size_t _FeedbackIndex = 0; _FeedbackIndex < _Feedback.size() && _ValidWord; ++_FeedbackIndex) 
 		{
-		case _Wrong:
-		{
-			for (size_t _IndexDatabase = 0; _IndexDatabase < DatabaseCuvinte.size(); _IndexDatabase++)
+			switch (_Feedback[_FeedbackIndex])
 			{
-				if (DatabaseCuvinte[_IndexDatabase][0] == _Guess[_Index] || DatabaseCuvinte[_IndexDatabase][1] == _Guess[_Index] || DatabaseCuvinte[_IndexDatabase][2] == _Guess[_Index] || DatabaseCuvinte[_IndexDatabase][3] == _Guess[_Index] || DatabaseCuvinte[_IndexDatabase][4] == _Guess[_Index])
-				{
-					DatabaseCuvinte.erase(DatabaseCuvinte.begin() + _IndexDatabase);
-				}
-			}
-
-			break;
-		}
-		case _Exists:
-		{
-			for (size_t _IndexDatabase = 0; _IndexDatabase < DatabaseCuvinte.size(); _IndexDatabase++)
+			case _Wrong:
 			{
-				if (DatabaseCuvinte[_IndexDatabase][_Index] == _Guess[_Index]) 
+				for (size_t _LetterIndex = 0; _LetterIndex < DatabaseCuvinte[_WordIndex].size(); ++_LetterIndex)
 				{
-					DatabaseCuvinte.erase(DatabaseCuvinte.begin() + _IndexDatabase);
+					if (DatabaseCuvinte[_WordIndex][_LetterIndex] == _Guess[_FeedbackIndex])
+					{
+						_ValidWord = false;
+						break;
+					}
 				}
-				else if (DatabaseCuvinte[_IndexDatabase][0] != _Guess[_Index] && DatabaseCuvinte[_IndexDatabase][1] != _Guess[_Index] && DatabaseCuvinte[_IndexDatabase][2] != _Guess[_Index] && DatabaseCuvinte[_IndexDatabase][3] != _Guess[_Index] && DatabaseCuvinte[_IndexDatabase][4] != _Guess[_Index])
-				{
-					DatabaseCuvinte.erase(DatabaseCuvinte.begin() + _IndexDatabase);
-				}
+				break;
 			}
-
-			break;
-		}
-		case _Right:
-		{
-			for (size_t _IndexDatabase = 0; _IndexDatabase < DatabaseCuvinte.size(); _IndexDatabase++)
+			case _Exists:
 			{
-				if (DatabaseCuvinte[_IndexDatabase][_Index] != _Guess[_Index])
+				bool _FoundLetter = false;
+				for (size_t _LetterIndex = 0; _LetterIndex < DatabaseCuvinte[_WordIndex].size(); ++_LetterIndex)
 				{
-					DatabaseCuvinte.erase(DatabaseCuvinte.begin() + _IndexDatabase);
+					if (DatabaseCuvinte[_WordIndex][_LetterIndex] == _Guess[_FeedbackIndex])
+					{
+						_FoundLetter = true;
+						break;
+					}
 				}
-			}
 
-			break;
+				if (!_FoundLetter || DatabaseCuvinte[_WordIndex][_FeedbackIndex] == _Guess[_FeedbackIndex])
+				{
+					_ValidWord = false;
+				}
+				break;
+			}
+			case _Right: 
+			{
+				if (DatabaseCuvinte[_WordIndex][_FeedbackIndex] != _Guess[_FeedbackIndex])
+				{
+					_ValidWord = false;
+				}
+				break;
+			}
+			default: 
+			{
+				break;
+			}
+			}
 		}
-		default:
+
+		if (_ValidWord)
 		{
-			break;
-		}
+			_NewList.push_back(DatabaseCuvinte[_WordIndex]);
 		}
 	}
+
+	DatabaseCuvinte = _NewList;
 }
 
 void WordleAPI::Bot::operator= (const Bot& _Other)
