@@ -97,7 +97,7 @@ bool WordleAPI::Bot::ValidPattern(std::vector<uint8_t> _Pattern, std::vector<cha
 	{
 		for (size_t _IndexJ = 0; _IndexJ < _Guess.size(); ++_IndexJ)
 		{
-			if (_Guess[_IndexJ] == _Guess[_IndexJ])
+			if (_Guess[_IndexI] == _Guess[_IndexJ])
 			{
 				if (_Pattern[_IndexI] == _Wrong && _Pattern[_IndexJ] != _Wrong || (_Pattern[_IndexI] != _Wrong && _Pattern[_IndexJ] == _Wrong))
 				{
@@ -119,14 +119,10 @@ double_t WordleAPI::Bot::ComputeEntropy(std::vector<char> _Guess)
 		{
 			continue;
 		}
+		
 
 		int32_t _NumOfRemWords = RemainingWords(_Feedback, _Guess);
-
 		if (!_NumOfRemWords)
-		{
-			continue;
-		}
-		if (!DatabaseCuvinte.size())
 		{
 			continue;
 		}
@@ -136,7 +132,6 @@ double_t WordleAPI::Bot::ComputeEntropy(std::vector<char> _Guess)
 
 		_CurrentEntropy += _Probability * _InformationQuantity;
 	}
-	
 
 	return _CurrentEntropy;
 }
