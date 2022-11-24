@@ -8,7 +8,7 @@
 A clone of the game Wordle and a bot that can solve it.
 
 # Contents
----
+
 1. [Description](#description)
 2. [Statistics](#statistics)
 3. [Getting started](#gettingstarted)
@@ -16,8 +16,6 @@ A clone of the game Wordle and a bot that can solve it.
 5. [Key features](#keyfeatures)
 6. [Team](#team)
 7. [Learning resources](#learningresources)
-
----
 
 # Description <a name="description"></a>
 Wordle is a desktop application developed using Win32 API and OpenGL which has support for Windows 7 and higher, available on x86 and x64. The solver uses information theory to give the best guess at all times.
