@@ -25,6 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Text", "Text", "{43A912A7-8
 		Solution Items\Resources\Text\WordList.txt = Solution Items\Resources\Text\WordList.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadMe Resources", "ReadMe Resources", "{75057814-6BED-4FF3-AFB7-9B1939DFB61F}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\ReadMe Resources\Banner.png = Solution Items\ReadMe Resources\Banner.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -64,6 +69,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1FDD1981-1E49-4674-AB41-A2A4A33867B9} = {49DC84E3-BC3A-4072-9B0E-E05A9D3AD1F5}
 		{43A912A7-81A3-406E-9CFC-47B7CDD6C7C1} = {1FDD1981-1E49-4674-AB41-A2A4A33867B9}
+		{75057814-6BED-4FF3-AFB7-9B1939DFB61F} = {49DC84E3-BC3A-4072-9B0E-E05A9D3AD1F5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {29741911-A567-43A7-8EF5-FAAE1EC7BA76}
