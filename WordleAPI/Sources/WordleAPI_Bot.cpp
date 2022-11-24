@@ -57,43 +57,81 @@ void WordleAPI::Bot::GenerateFeedbacks(std::vector<uint8_t> _CurrentPattern, uin
 	}
 }
 
-// TO BE CHANGED
 int32_t WordleAPI::Bot::RemainingWords(std::vector<uint8_t> _Pattern, std::vector<char> _Guess) 
 {
-	uint32_t _DeletedWords = 0;
-	for (std::vector <char> curr : DatabaseCuvinte) {
-		bool validWord = true;
-		for (int i = 0; i < _Pattern.size() && validWord; ++i) {
-			if (_Pattern[i] == _Wrong) {
-				for (char c : curr) {
-					if (c == _Guess[i]) {
-						validWord = false;
-					}
+	int32_t _Sum = 0;
+
+	for (size_t _IndexWord = 0; _IndexWord < DatabaseCuvinte.size(); _IndexWord++)
+	{
+		int32_t _LetterCounter = 0;
+		int32_t _ValidWord = 1;
+
+		for (size_t _IndexLetter = 0; _IndexLetter < DatabaseCuvinte[_IndexWord].size(); _IndexLetter++)
+		{
+			if (_Pattern[_IndexLetter] == _Right)
+			{
+				if (_Guess[_IndexLetter] != DatabaseCuvinte[_IndexWord][_IndexLetter])
+				{
+					_ValidWord = 0;
+				}
+
+				if (_ValidWord == 1)
+				{
+					_LetterCounter++;
 				}
 			}
-			else if (_Pattern[i] == _Exists) {
-				bool found = false;
-				for (char c : curr)
-					if (c == _Guess[i])
-						found = true;
 
-				if (curr[i] == _Guess[i])
-					found = false;
+			else if (_Pattern[_IndexLetter] == _Wrong)
+			{
 
-				if (!found)
-					validWord = false;
+				for (size_t _LetterIndex = 0; _LetterIndex <= _Guess.size()-1; _LetterIndex++)
+				{
+
+					if (DatabaseCuvinte[_IndexWord][_LetterIndex] == _Guess[_IndexLetter])
+					{
+						_ValidWord = 0;
+					}
+
+				}
+
+				if (_ValidWord == 1)
+				{
+					_LetterCounter++;
+				}
+
 			}
-			else {
-				if (curr[i] != _Guess[i])
-					validWord = false;
+			else
+			{
+				int32_t _FoundLetter = 0;
+
+				for (size_t _LetterIndex = 0; _LetterIndex <= _Guess.size()-1; _LetterIndex++)
+				{
+
+					if (DatabaseCuvinte[_IndexWord][_LetterIndex] == _Guess[_IndexLetter] )
+					{
+						_FoundLetter = 1;
+					}
+
+				}
+
+				if (DatabaseCuvinte[_IndexWord][_IndexLetter] == _Guess[_IndexLetter] || _FoundLetter == 0)
+				{
+					_ValidWord = 0;
+				}
+
+				if (_ValidWord == 1)
+				{
+					_LetterCounter++;
+				}
+
 			}
 		}
-
-		if (!validWord)
-			++_DeletedWords;
+		if (_LetterCounter == _Guess.size())
+		{
+			_Sum++;
+		}
 	}
-
-	return (DatabaseCuvinte.size() - _DeletedWords);
+	return _Sum;
 }
 
 bool WordleAPI::Bot::ValidPattern(std::vector<uint8_t> _Pattern, std::vector<char> _Guess) 
