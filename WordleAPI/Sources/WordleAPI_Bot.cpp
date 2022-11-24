@@ -34,6 +34,11 @@ void WordleAPI::Bot::Destroy()
 {
 	DatabaseCuvinte.clear();
 	PossibleFeedbacks.clear();
+	WordHas.reset();
+	for (size_t _Index = 0; _Index < 5; ++_Index)
+	{
+		NotOnPos[_Index].reset();
+	}
 }
 
 void WordleAPI::Bot::GenerateFeedbacks(std::vector<uint8_t> _CurrentPattern, uint16_t _WordSize)
@@ -106,6 +111,19 @@ bool WordleAPI::Bot::ValidPattern(std::vector<uint8_t> _Pattern, std::vector<cha
 			}
 		}
 	}
+
+	for (size_t _Index = 0; _Index < _Guess.size(); ++_Index)
+	{
+		if (_Pattern[_Index] == _Wrong && WordHas[_Guess[_Index] - 'A'])
+		{
+			return false;
+		}
+
+		if (_Pattern[_Index] != _Wrong && NotOnPos[_Index][_Guess[_Index] - 'A'])
+		{
+			return false;
+		}
+	} 
 
 	return true;
 }
@@ -189,6 +207,8 @@ void WordleAPI::Bot::SendFeedback(const std::vector<uint8_t>& _Feedback, const s
 			}
 			case _Exists:
 			{
+				WordHas[_Guess[_FeedbackIndex] - 'A'] = 1;
+				NotOnPos[_FeedbackIndex][_Guess[_FeedbackIndex] - 'A'] = 1;
 				bool _FoundLetter = false;
 				for (size_t _LetterIndex = 0; _LetterIndex < DatabaseCuvinte[_WordIndex].size(); ++_LetterIndex)
 				{
@@ -207,6 +227,7 @@ void WordleAPI::Bot::SendFeedback(const std::vector<uint8_t>& _Feedback, const s
 			}
 			case _Right: 
 			{
+				WordHas[_Guess[_FeedbackIndex] - 'A'] = 1;
 				if (DatabaseCuvinte[_WordIndex][_FeedbackIndex] != _Guess[_FeedbackIndex])
 				{
 					_ValidWord = false;

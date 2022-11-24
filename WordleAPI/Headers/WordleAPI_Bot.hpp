@@ -5,6 +5,7 @@
 
 
 #include "WordleAPI.hpp"
+#include <bitset>
 
 
 
@@ -34,6 +35,7 @@ namespace WordleAPI
 	private:
 		std::vector<std::vector<char>> DatabaseCuvinte;
 		std::vector<std::vector<uint8_t>> PossibleFeedbacks;
+		std::bitset<26> WordHas, NotOnPos[5];
 		const std::vector<char> FIRST_GUESS = {'C', 'A', 'R', 'E', 'I'};
 		bool FirstGuess = true;
 
