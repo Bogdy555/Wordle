@@ -396,6 +396,12 @@ bool Wordle::Application::UpdateFullScreen()
 
 void Wordle::Application::Setup()
 {
+	if (GetArgC() != 1)
+	{
+		Close(WordleAPI::_ReturnError);
+		return;
+	}
+
 	GetSharedInstanceMutex().Lock();
 
 	if (*GetSharedInstanceMemory() > 1)

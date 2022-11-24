@@ -2,19 +2,33 @@
 
 
 
-WordleAPI::Bot::Bot() : DatabaseCuvinte()
+const std::vector<char> WordleAPI::Bot::FIRST_GUESS = { 'C', 'A', 'R', 'E', 'I' };
+
+
+
+WordleAPI::Bot::Bot() : DatabaseCuvinte(), PossibleFeedbacks(), WordHas(), NotOnPos(), FirstGuess(true)
 {
 
 }
 
-WordleAPI::Bot::Bot(const Bot& _Other) : DatabaseCuvinte(_Other.DatabaseCuvinte)
+WordleAPI::Bot::Bot(const Bot& _Other) : DatabaseCuvinte(_Other.DatabaseCuvinte), PossibleFeedbacks(_Other.PossibleFeedbacks), WordHas(_Other.WordHas), NotOnPos(), FirstGuess(_Other.FirstGuess)
 {
-
+	NotOnPos[0] = _Other.NotOnPos[0];
+	NotOnPos[1] = _Other.NotOnPos[1];
+	NotOnPos[2] = _Other.NotOnPos[2];
+	NotOnPos[3] = _Other.NotOnPos[3];
+	NotOnPos[4] = _Other.NotOnPos[4];
 }
 
-WordleAPI::Bot::Bot(Bot&& _Other) noexcept : DatabaseCuvinte(std::move(_Other.DatabaseCuvinte))
+WordleAPI::Bot::Bot(Bot&& _Other) noexcept : DatabaseCuvinte(std::move(_Other.DatabaseCuvinte)), PossibleFeedbacks(std::move(_Other.PossibleFeedbacks)), WordHas(std::move(_Other.WordHas)), NotOnPos(), FirstGuess(_Other.FirstGuess)
 {
+	NotOnPos[0] = std::move(_Other.NotOnPos[0]);
+	NotOnPos[1] = std::move(_Other.NotOnPos[1]);
+	NotOnPos[2] = std::move(_Other.NotOnPos[2]);
+	NotOnPos[3] = std::move(_Other.NotOnPos[3]);
+	NotOnPos[4] = std::move(_Other.NotOnPos[4]);
 
+	_Other.FirstGuess = true;
 }
 
 WordleAPI::Bot::~Bot()
@@ -41,7 +55,7 @@ void WordleAPI::Bot::Destroy()
 	}
 }
 
-void WordleAPI::Bot::GenerateFeedbacks(std::vector<uint8_t> _CurrentPattern, uint16_t _WordSize)
+void WordleAPI::Bot::GenerateFeedbacks(std::vector<uint8_t> _CurrentPattern, size_t _WordSize)
 {
 	if (_CurrentPattern.size() == _WordSize)
 	{
@@ -152,12 +166,12 @@ bool WordleAPI::Bot::ValidPattern(std::vector<uint8_t> _Pattern, std::vector<cha
 
 	for (size_t _Index = 0; _Index < _Guess.size(); ++_Index)
 	{
-		if (_Pattern[_Index] == _Wrong && WordHas[_Guess[_Index] - 'A'])
+		if (_Pattern[_Index] == _Wrong && WordHas[(size_t)(_Guess[_Index]) - (size_t)('A')])
 		{
 			return false;
 		}
 
-		if (_Pattern[_Index] != _Wrong && NotOnPos[_Index][_Guess[_Index] - 'A'])
+		if (_Pattern[_Index] != _Wrong && NotOnPos[_Index][(size_t)(_Guess[_Index]) - (size_t)('A')])
 		{
 			return false;
 		}
@@ -245,8 +259,8 @@ void WordleAPI::Bot::SendFeedback(const std::vector<uint8_t>& _Feedback, const s
 			}
 			case _Exists:
 			{
-				WordHas[_Guess[_FeedbackIndex] - 'A'] = 1;
-				NotOnPos[_FeedbackIndex][_Guess[_FeedbackIndex] - 'A'] = 1;
+				WordHas[(size_t)(_Guess[_FeedbackIndex]) - (size_t)('A')] = 1;
+				NotOnPos[_FeedbackIndex][(size_t)(_Guess[_FeedbackIndex]) - (size_t)('A')] = 1;
 				bool _FoundLetter = false;
 				for (size_t _LetterIndex = 0; _LetterIndex < DatabaseCuvinte[_WordIndex].size(); ++_LetterIndex)
 				{
@@ -265,7 +279,7 @@ void WordleAPI::Bot::SendFeedback(const std::vector<uint8_t>& _Feedback, const s
 			}
 			case _Right: 
 			{
-				WordHas[_Guess[_FeedbackIndex] - 'A'] = 1;
+				WordHas[(size_t)(_Guess[_FeedbackIndex]) - (size_t)('A')] = 1;
 				if (DatabaseCuvinte[_WordIndex][_FeedbackIndex] != _Guess[_FeedbackIndex])
 				{
 					_ValidWord = false;
@@ -290,10 +304,28 @@ void WordleAPI::Bot::SendFeedback(const std::vector<uint8_t>& _Feedback, const s
 
 void WordleAPI::Bot::operator= (const Bot& _Other)
 {
-	DatabaseCuvinte = DatabaseCuvinte;
+	DatabaseCuvinte = _Other.DatabaseCuvinte;
+	PossibleFeedbacks = _Other.PossibleFeedbacks;
+	WordHas = _Other.WordHas;
+	NotOnPos[0] = _Other.NotOnPos[0];
+	NotOnPos[1] = _Other.NotOnPos[1];
+	NotOnPos[2] = _Other.NotOnPos[2];
+	NotOnPos[3] = _Other.NotOnPos[3];
+	NotOnPos[4] = _Other.NotOnPos[4];
+	FirstGuess = _Other.FirstGuess;
 }
 
 void WordleAPI::Bot::operator= (Bot&& _Other) noexcept
 {
-	DatabaseCuvinte = std::move(DatabaseCuvinte);
+	DatabaseCuvinte = std::move(_Other.DatabaseCuvinte);
+	PossibleFeedbacks = std::move(_Other.PossibleFeedbacks);
+	WordHas = std::move(_Other.WordHas);
+	NotOnPos[0] = std::move(_Other.NotOnPos[0]);
+	NotOnPos[1] = std::move(_Other.NotOnPos[1]);
+	NotOnPos[2] = std::move(_Other.NotOnPos[2]);
+	NotOnPos[3] = std::move(_Other.NotOnPos[3]);
+	NotOnPos[4] = std::move(_Other.NotOnPos[4]);
+	FirstGuess = _Other.FirstGuess;
+
+	_Other.FirstGuess = true;
 }
