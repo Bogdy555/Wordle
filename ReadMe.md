@@ -69,7 +69,7 @@ The app has fullscreen support, just hit the F11 key.
 
 # Team <a name="team"></a>
 
-Team name: HackxFF
+Team name: HACKxFF
 
 All members are part of group 143.
 
